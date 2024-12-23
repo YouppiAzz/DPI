@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Patient',
-    'Medcin',
+    'Medecin',
 ]
 
 MIDDLEWARE = [
@@ -52,12 +52,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'main.urls'
-
+import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates']
         ,
+
+       
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,8 +75,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'main.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import pymysql
+pymysql.install_as_MySQLdb()
 
 DATABASES = {
     'default': {

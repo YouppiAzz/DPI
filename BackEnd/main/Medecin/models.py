@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 #**************************************************************/
 class Medecin(models.Model):
@@ -8,25 +9,6 @@ class Medecin(models.Model):
 
     def __str__(self):
         return f"Dr. {self.nom} {self.prenom} - {self.specialite}"
-    def creer_dpi(self, nss, code_QR, nom, prenom, date_naissance, adresse, telephone, telephone_urgence, mutuelle, poids, groupe_sanguin):
-        """
-        Méthode pour créer un DPI pour un patient par le médecin.
-        """
-        dpi = DPI.objects.create(
-            nss=nss,
-            code_QR=code_QR,
-            nom=nom,
-            prenom=prenom,
-            date_naissance=date_naissance,
-            adresse=adresse,
-            telephone=telephone,
-            telephone_urgence=telephone_urgence,
-            mutuelle=mutuelle,
-            poids=poids,
-            groupe_sanguin=groupe_sanguin,
-            medecin_traitant=self  # Le médecin traitant est celui qui crée le DPI
-        )
-        return dpi
 #**************************************************************/
 class Medicament(models.Model):
     nom = models.CharField(max_length=100)
@@ -62,8 +44,7 @@ class Bilan(models.Model):
 
     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     date_bilan = models.DateField(auto_now_add=True)  # Date de création automatique
-    resultat = models.OneToOneField(ResultatBiologique, on_delete=models.CASCADE)  # Un seul résultat biologique
-    consultations = models.ManyToManyField('Consultation', related_name='bilans')  # Plusieurs consultations peuvent inclure ce bilan
+    resultat = models.OneToOneField(ResultatBiologique, on_delete=models.CASCADE)  
 
     def __str__(self):
         return f"Bilan {self.type} du {self.date_bilan}"
@@ -98,7 +79,7 @@ class Consultation(models.Model):
 #**************************************************************/
 class DPI(models.Model):
     nss = models.IntegerField(unique=True)
-    code_QR = models.ImageField(upload_to='qr_codes/')
+    code_QR =  models.IntegerField(unique=True)
     nom = models.CharField(max_length=50)
     prenom = models.CharField(max_length=50)
     date_naissance = models.DateField()
