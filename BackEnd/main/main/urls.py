@@ -18,7 +18,11 @@ from django.contrib import admin
 from django.urls import path,include
 
 from Medecin import views
+from Medecin.views import login
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login', login, name='login'),
+
     path('api/medecin/', include('Medecin.urls')),
 ]

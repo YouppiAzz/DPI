@@ -1,14 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 #**************************************************************/
-class Medecin(models.Model):
+class MedecinManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email is required')
+        user = self.model(email=email.lower(), **extra_fields)
+        if password:
+            user.set_password(password)
+        user.save()
+        return user
+
+
+class Medecin(AbstractBaseUser, PermissionsMixin):
     nom = models.CharField(max_length=50)
     prenom = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
     specialite = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+
+    objects = MedecinManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nom', 'prenom', 'specialite']
 
     def __str__(self):
         return f"Dr. {self.nom} {self.prenom} - {self.specialite}"
+
 #**************************************************************/
 class Medicament(models.Model):
     nom = models.CharField(max_length=100)
@@ -76,25 +97,4 @@ class Consultation(models.Model):
             raise ValueError("Le résumé doit être une chaîne de caractères.")
         self.resume = texte
         self.save()  # Sauvegarde les modifications dans la base de données
-#**************************************************************/
-class DPI(models.Model):
-    nss = models.IntegerField(unique=True)
-    code_QR =  models.IntegerField(unique=True)
-    nom = models.CharField(max_length=50)
-    prenom = models.CharField(max_length=50)
-    date_naissance = models.DateField()
-    adresse = models.CharField(max_length=255)
-    telephone = models.IntegerField()
-    telephone_urgence = models.IntegerField()
-    mutuelle = models.CharField(max_length=100)
-    poids = models.FloatField()
-    groupe_sanguin = models.CharField(max_length=5)
-    medecin_traitant = models.ForeignKey(Medecin, on_delete=models.CASCADE)
-    date_creation = models.DateField(auto_now_add=True)
-    soins = models.ManyToManyField(Soin, related_name='dpis')
-    # Liste des consultations associées à ce DPI
-    consultations = models.ManyToManyField(Consultation, related_name='dpis')
 
-    def __str__(self):
-        return f"{self.nom} {self.prenom} - NSS: {self.nss}"
-#****************************************************************/

@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import creer_dpi
+from Patient.views import creer_dpi
 
 urlpatterns = [
      path('creer-dpi/', creer_dpi, name='creer_dpi'),
+
 ]

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Patient',
     'Medecin',
+    'rest_framework',  # Add this line
+    'rest_framework_simplejwt',  # And this line
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'Medecin.Medecin'

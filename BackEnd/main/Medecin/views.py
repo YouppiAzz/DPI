@@ -1,58 +1,109 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from .models import DPI, Medecin
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Medecin
+from Patient.models import Patient
 
-@csrf_exempt  # Pour désactiver temporairement la protection CSRF (si API)
-def creer_dpi(request):
-    if request.method == 'POST':  # S'assurer que la méthode est POST
+
+
+class Laborantin:
+    pass
+class Radiologue:
+    pass
+class Infirmier:
+    pass
+
+@api_view(['POST'])
+def login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    # Authenticate the user
+    user = authenticate(request, username=email, password=password)
+
+    if user:
+        # Generate a refresh token for the authenticated user
+        refresh = RefreshToken.for_user(user)
+
+        # Try to get the user type (Medecin, Patient, Infirmier, Labo, Radiologue)
         try:
-            # Charger les données JSON
-            data = json.loads(request.body)
-
-            # Récupérer les données nécessaires
-            nss = data.get('nss')
-            code_QR = data.get('code_QR')
-            nom = data.get('nom')
-            prenom = data.get('prenom')
-            date_naissance = data.get('date_naissance')
-            adresse = data.get('adresse')
-            telephone = data.get('telephone')
-            telephone_urgence = data.get('telephone_urgence')
-            mutuelle = data.get('mutuelle')
-            poids = data.get('poids')
-            groupe_sanguin = data.get('groupe_sanguin')
-            medecin_id = data.get('medecin_traitant')  # ID du médecin
-
-            # Vérification : le médecin existe ?
-            medecin = Medecin.objects.get(id=medecin_id)
-
-            # Création du DPI
-            dpi = DPI.objects.create(
-                nss=nss,
-                code_QR=code_QR,
-                nom=nom,
-                prenom=prenom,
-                date_naissance=date_naissance,
-                adresse=adresse,
-                telephone=telephone,
-                telephone_urgence=telephone_urgence,
-                mutuelle=mutuelle,
-                poids=poids,
-                groupe_sanguin=groupe_sanguin,
-                medecin_traitant=medecin
-            )
-
-            # Réponse JSON
-            return JsonResponse({
-                "message": "DPI créé avec succès.",
-                "dpi_id": dpi.id
-            }, status=201)
-
+            # Check if user is a Medecin
+            medecin = Medecin.objects.get(user=user)
+            return Response({
+                'token': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'nom': medecin.nom,
+                    'prenom': medecin.prenom,
+                    'specialite': medecin.specialite,
+                    'user_type': 'medecin'
+                }
+            })
         except Medecin.DoesNotExist:
-            return JsonResponse({"error": "Médecin introuvable."}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+            pass
 
-    # Si ce n'est pas une méthode POST
-    return JsonResponse({"error": "Méthode non autorisée."}, status=405)
+        try:
+            # Check if user is a Patient
+            patient = Patient.objects.get(user=user)
+            return Response({
+                'token': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'first_name': patient.first_name,
+                    'last_name': patient.last_name,
+                    'medical_insurance_provider': patient.medical_insurance_provider,
+                    'user_type': 'patient'
+                }
+            })
+        except Patient.DoesNotExist:
+            pass
+
+        try:
+            # Check if user is an Infirmier
+            infirmier = Infirmier.objects.get(user=user)
+            return Response({
+                'token': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'user_type': 'infirmier'
+                }
+            })
+        except Infirmier.DoesNotExist:
+            pass
+
+        try:
+            # Check if user is a Labo staff
+            laborantin = Laborantin.objects.get(user=user)
+            return Response({
+                'token': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'user_type': 'labo'
+                }
+            })
+        except Laborantin.DoesNotExist:
+            pass
+
+        try:
+            # Check if user is a Radiologue
+            radiologue = Radiologue.objects.get(user=user)
+            return Response({
+                'token': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'user_type': 'radiologue'
+                }
+            })
+        except Radiologue.DoesNotExist:
+            pass
+
+        # If no matching user type found
+        return Response({'error': 'Invalid credentials or user type'}, status=400)
+
+    return Response({'error': 'Invalid credentials'}, status=400)
