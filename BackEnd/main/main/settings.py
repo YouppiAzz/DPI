@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Patient',
     'Medecin',
+    'Infirmier',
     'rest_framework',  # Add this line
     'rest_framework_simplejwt',  # And this line
 ]
