@@ -18,11 +18,11 @@ from django.contrib import admin
 from django.urls import path,include
 
 from Medecin import views
-from Medecin.views import login
+from Medecin.views import CustomLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login', login, name='login'),
+    path('api/login/', CustomLoginView.as_view(), name='custom_login'),
 
     path('api/medecin/', include('Medecin.urls')),
 ]

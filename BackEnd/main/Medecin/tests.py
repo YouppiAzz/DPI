@@ -1,40 +1,47 @@
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
-from .models import Medecin
-from django.contrib.auth.hashers import make_password
+from Medecin.models import CustomUser
 
-
-class LoginViewTestCase(TestCase):
+class LoginAPITest(TestCase):
     def setUp(self):
-        # Create a test user
-        self.medecin = Medecin.objects.create(
-            email="test@example.com",
-            password=make_password("password123"),  # Hash the password
-            nom="Doe",
-            prenom="John",
-            specialite="Cardiology"
+        # Set up a test user
+        self.test_user = CustomUser.objects.create_user(
+            email="a@a.com",
+            password="aa",
+            user_type="patient"  # Replace with the actual type
         )
+        self.login_url = reverse('custom_login')  # Update with the correct name of your login API route
         self.client = APIClient()
-        self.url = reverse('login')  # Replace with the actual name of your URL pattern
 
-    def test_login_success(self):
-        # Simulate a successful login
-        response = self.client.post(self.url, {
-            "email": "test@example.com",
-            "password": "password123"
-        }, format='json')
-
+    def test_valid_login(self):
+        """Test if valid login returns a token and user_type"""
+        response = self.client.post(
+            self.login_url,
+            {"email": "a@a.com", "password": "aa"},
+            format="json"
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertIn('token', response.data)
-        self.assertEqual(response.data['user']['email'], self.medecin.email)
+        self.assertIn("access", response.data)
+        self.assertIn("user_type", response.data)
+        self.assertEqual(response.data["user_type"], "patient")  # Replace with the expected user type
 
-    def test_login_failure(self):
-        # Simulate a failed login
-        response = self.client.post(self.url, {
-            "email": "wrong@example.com",
-            "password": "wrongpassword"
-        }, format='json')
+    def test_invalid_login(self):
+        """Test if invalid login credentials return an error"""
+        response = self.client.post(
+            self.login_url,
+            {"email": "invalid@a.com", "password": "wrong"},
+            format="json"
+        )
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data["detail"], "Invalid credentials")
 
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('error', response.data)
+    def test_role_field(self):
+        """Test if the role is included in the response"""
+        response = self.client.post(
+        self.login_url,
+        {"email": "a@a.com", "password": "aa"},
+        format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user_type"], self.test_user.user_type)
