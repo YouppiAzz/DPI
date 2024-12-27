@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
@@ -26,13 +28,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('radiologue', 'Radiologue'),
         ('laboratorian', 'Laboratorian'),
     )
-
+    id = models.AutoField(primary_key=True)  # AutoField automatically increments integer IDs
     email = models.EmailField(unique=True)
     nom = models.CharField(max_length=50)
     prenom = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # For admin users
-    user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
+    user_type = models.CharField(max_length=15, choices=USER_TYPES, default='patient')
 
     objects = CustomUserManager()
 
