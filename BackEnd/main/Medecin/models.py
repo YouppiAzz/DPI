@@ -1,13 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
 from django.contrib.auth.models import AbstractUser
-from django.db import models
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -29,6 +23,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('medecin', 'Medecin'),
         ('infirmier', 'Infirmier'),
         ('patient', 'Patient'),
+        ('radiologue', 'Radiologue'),
+        ('laboratorian', 'Laboratorian'),
     )
 
     email = models.EmailField(unique=True)
