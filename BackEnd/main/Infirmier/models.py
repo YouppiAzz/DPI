@@ -1,37 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from Medecin.models import CustomUser
 
-
-
-# **********************************************************
-
-class InfirmierManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('Email is required')
-        user = self.model(email=email.lower(), **extra_fields)
-        if password:
-            user.set_password(password)
-        user.save()
-        return user
-
-
-
-class Infirmier(AbstractBaseUser, PermissionsMixin):
-    nom = models.CharField(max_length=50)
-    prenom = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    specialite = models.CharField(max_length=50)
-    is_active = models.BooleanField(default=True)
-
-    objects = InfirmierManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nom', 'prenom', 'specialite']
+class Infirmier(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='infirmier_profile')
+    Domaine = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Infirmier {self.nom} {self.prenom} - {self.specialite}"
+        return f"Infirmier {self.user.nom} {self.user.prenom} - {self.Domaine}"
+
 
 # ********************************************************
 

@@ -3,32 +3,57 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-#**************************************************************/
-class MedecinManager(BaseUserManager):
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
+
+class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('Email is required')
-        user = self.model(email=email.lower(), **extra_fields)
-        if password:
-            user.set_password(password)
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
         user.save()
         return user
 
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
 
-class Medecin(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    USER_TYPES = (
+        ('medecin', 'Medecin'),
+        ('infirmier', 'Infirmier'),
+        ('patient', 'Patient'),
+    )
+
+    email = models.EmailField(unique=True)
     nom = models.CharField(max_length=50)
     prenom = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    specialite = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)  # For admin users
+    user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
 
-    objects = MedecinManager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nom', 'prenom', 'specialite']
+    REQUIRED_FIELDS = ['nom', 'prenom']
 
     def __str__(self):
-        return f"Dr. {self.nom} {self.prenom} - {self.specialite}"
+        return f"{self.nom} {self.prenom} - {self.user_type}"
+
+
+class Medecin(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='medecin_profile')
+    specialite = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Dr. {self.user.nom} {self.user.prenom} - {self.specialite}"
+
 
 #**************************************************************/
 class Medicament(models.Model):

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'Patient',
     'Medecin',
     'Infirmier',
+    'Laboratorian',
+    'Radiologue',
     'rest_framework',  # Add this line
     'rest_framework_simplejwt',  # And this line
 ]
@@ -140,4 +142,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'Medecin.Medecin'
+AUTH_USER_MODEL = 'Medecin.CustomUser'
