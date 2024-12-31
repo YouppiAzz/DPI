@@ -24,5 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/', CustomLoginView.as_view(), name='custom_login'),
 
-    path('api/medecin/', include('Medecin.urls')),
+    path('api/', include('Medecin.urls'))
 ]
