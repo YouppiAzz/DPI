@@ -22,5 +22,5 @@ class SoinPatient(models.Model):
     details_soins = models.TextField()
 
     def __str__(self):
-        return f"Soin du {self.patient} par {self.infirmier.nom} {self.infirmier.prenom}"
+        return f"Soin du {self.patient} par {self.infirmier.user.nom} {self.infirmier.user.prenom}"
 

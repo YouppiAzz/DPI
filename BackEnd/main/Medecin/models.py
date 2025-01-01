@@ -120,4 +120,13 @@ class Consultation(models.Model):
             raise ValueError("Le résumé doit être une chaîne de caractères.")
         self.resume = texte
         self.save()  # Sauvegarde les modifications dans la base de données
+#**************************************************************
+class Notification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
+    date = models.DateField(auto_now_add=True)  # Automatically set the date to today
+    time = models.TimeField(auto_now_add=True)  # Automatically set the time to now
+    content = models.TextField()  # Content of the notification
+
+    def __str__(self):
+        return f"Notification for {self.user.nom} {self.user.prenom} on {self.date} at {self.time}"
 

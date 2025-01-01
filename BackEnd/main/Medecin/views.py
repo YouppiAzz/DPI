@@ -35,7 +35,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import  Medecin,Ordonnance,Consultation
+from .models import Medecin, Ordonnance, Consultation, Notification
 from Patient.models import Patient,DPI
 class ListeDPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -336,3 +336,61 @@ class ListePatientsParMedecinView(APIView):
 
         except Medecin.DoesNotExist:
             return Response({"error": "Médecin introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
+class NotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id):
+        try:
+            notifications = Notification.objects.filter(user_id=user_id)
+            
+            if not notifications.exists():
+                return Response({"message": "Aucune notification trouvée"}, status=status.HTTP_404_NOT_FOUND)
+
+            data = [
+                {
+                    "user_id": notification.user_id,
+                    "user_nom": notification.user.nom,
+                    "user_prenom": notification.user.prenom,
+                    "date": notification.date,
+                    "time": notification.time,
+                    "content": notification.content,
+                }
+                for notification in notifications
+            ]
+            
+            return Response(data, status=status.HTTP_200_OK)
+                
+            
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+class AddNotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+
+            content = request.data.get("content")
+            if not content:
+                return Response({"error": "Le contenu de la notification est obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+            notification = Notification.objects.create(user=user, content=content)
+            notification.save()
+
+            return Response(
+                {
+                    "message": "Notification added successfully.",
+                    "notification": {
+                        "user_id": notification.user.id,
+                        "user_name": f"{notification.user.nom} {notification.user.prenom}",
+                        "date": notification.date,
+                        "time": notification.time,
+                        "content": notification.content,
+                    },
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
