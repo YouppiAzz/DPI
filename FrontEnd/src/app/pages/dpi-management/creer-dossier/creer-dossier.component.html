@@ -1,0 +1,106 @@
+<div class="flex flex-col h-screen">
+  <app-header [pageName]="'Créer Dossier'" [isSearchActive]="false"></app-header>
+  <div class="flex-1 pb-8 px-8">
+    
+    <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()">
+
+      <!-- Informations du patient -->
+
+      <p class="pb-3 text-xl">Informations du patient</p>
+
+      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Nom</label>
+            <input type="text" formControlName="nom"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Prénom</label>
+            <input type="text" formControlName="prenom"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+        </div>
+         <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Numéro de sécurité sociale</label>
+          <input type="text" formControlName="numSecu"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Date de naissance</label>
+          <input type="date" formControlName="dateNaissance"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Adresse</label>
+          <input type="text" formControlName="adresse"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Numéro de téléphone</label>
+          <input type="text" formControlName="numTel"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+
+      </div>
+
+        <!-- Contact d'urgence -->
+
+        <p class="py-3 text-xl">Contact d'urgence</p>
+
+       <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Personne a contacter</label>
+            <input type="text" formControlName="nomContact"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Numéro de téléphone</label>
+            <input type="text" formControlName="numTelContact"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+        </div>
+
+       </div>
+
+        <!-- Equipe medicale -->
+
+        <p class="py-3 text-xl">Equipe médicale</p>
+
+        <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Medecin traitant</label>
+            <input type="text" formControlName="medecin"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Infirmier en charge</label>
+            <input type="text" formControlName="infirmier"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Buttons -->
+
+      <div class="flex gap-4 pt-6">
+          <button type="submit" 
+            class="px-6 py-2 bg-[#5DADE2] text-white rounded-lg hover:bg-[#4a8cb3] transition-colors">
+            Créer le dossier
+          </button>
+          <button type="button" (click)="router.navigate(['/dpi-management'])"
+            class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            Annuler
+          </button>
+        </div>
+
+    </form>
+  </div>
+</div>

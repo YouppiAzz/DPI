@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DpiManagementComponent } from './dpi-management.component';
+import { CreerDossierComponent } from './creer-dossier.component';
 
-describe('DpiManagementComponent', () => {
-  let component: DpiManagementComponent;
-  let fixture: ComponentFixture<DpiManagementComponent>;
+describe('CreerDossierComponent', () => {
+  let component: CreerDossierComponent;
+  let fixture: ComponentFixture<CreerDossierComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DpiManagementComponent]
+      imports: [CreerDossierComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DpiManagementComponent);
+    fixture = TestBed.createComponent(CreerDossierComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

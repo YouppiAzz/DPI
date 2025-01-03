@@ -1,14 +1,14 @@
 <div class="flex items-center justify-between px-8 py-6">
 
-  <p class="font-bold text-[24px]">Dossiers Patients</p>
+  <p class="font-bold text-[24px]">{{pageName}}</p>
 
   <div class="relative w-1/3">
-    <div class="flex items-center">
+    <div class="flex items-center" *ngIf="isSearchActive">
       <input
+        (input)="onSearch($event)"
         type="text"
         placeholder="Rechercher un dossier..."
-        class="w-full px-4 py-2 pl-10 bg-gray-100 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
-      >
+        class="w-full px-4 py-2 pl-10 bg-gray-100 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
       <ng-icon
         name="dripSearch"
         class="absolute left-3 text-gray-400 text-[20px]"
