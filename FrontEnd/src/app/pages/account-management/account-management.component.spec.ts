@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DpiManagementComponent } from './dpi-management.component';
+import { AccountManagementComponent } from './account-management.component';
 
-describe('DpiManagementComponent', () => {
-  let component: DpiManagementComponent;
-  let fixture: ComponentFixture<DpiManagementComponent>;
+describe('AccountManagementComponent', () => {
+  let component: AccountManagementComponent;
+  let fixture: ComponentFixture<AccountManagementComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DpiManagementComponent]
+      imports: [AccountManagementComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DpiManagementComponent);
+    fixture = TestBed.createComponent(AccountManagementComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

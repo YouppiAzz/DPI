@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreerDossierComponent } from './creer-dossier.component';
+import { CreerUserComponent } from './creer-user.component';
 
-describe('CreerDossierComponent', () => {
-  let component: CreerDossierComponent;
-  let fixture: ComponentFixture<CreerDossierComponent>;
+describe('CreerUserComponent', () => {
+  let component: CreerUserComponent;
+  let fixture: ComponentFixture<CreerUserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreerDossierComponent]
+      imports: [CreerUserComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CreerDossierComponent);
+    fixture = TestBed.createComponent(CreerUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

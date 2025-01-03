@@ -4,43 +4,29 @@ import { HeaderComponent } from '../../../components/header/header.component';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-creer-dossier',
-  templateUrl: './creer-dossier.component.html',
+  selector: 'app-creer-user',
+  templateUrl: './creer-user.component.html',
   imports: [ReactiveFormsModule, HeaderComponent],
   standalone: true
 })
 export class CreerUserComponent {
-  dossierForm: FormGroup;
+  userForm: FormGroup;
 
   constructor(public fb: FormBuilder,public router: Router) {
-    this.dossierForm = this.fb.group({
-
-      //Informations du Patient
-
+    this.userForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
-      numSecu: ['', Validators.required],
-      dateNaissance: ['', Validators.required],
-      adresse: ['', Validators.required],
-      numTel: ['', Validators.required],
-
-      //Contact d'urgence
-
-      nomContact: ['', Validators.required],
-      numTelContact: ['', Validators.required],
-
-      //Equipe medicale
-
-      medecin: ['', Validators.required],
-      infirmier: ['', Validators.required],
-
+      numSecu: ['', Validators.required], 
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required], 
+      userType: ['patient', Validators.required]
     });
   }
 
   onSubmit() {
-    if (this.dossierForm.valid) {
-      console.log(this.dossierForm.value);
-      this.router.navigate(['/dpi-management']);
+    if (this.userForm.valid) {
+      console.log(this.userForm.value);
+      this.router.navigate(['/account-management']);
     }
   }
 }

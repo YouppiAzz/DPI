@@ -5,6 +5,7 @@ import { dripBell, dripSearch } from '@ng-icons/dripicons';
 import { SearchService } from '../../shared/search.service';
 import { Input } from '@angular/core';
 import { NgIf } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -13,7 +14,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
   standalone: true,
-  imports: [NgIcon, NgIconComponent, NgIf],
+  imports: [NgIcon, NgIconComponent, NgIf, RouterModule],
   viewProviders: [provideIcons({ dripBell, dripSearch })]
 })
 export class HeaderComponent {
