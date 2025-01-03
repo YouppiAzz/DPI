@@ -45,8 +45,21 @@ class ListeDPIView(APIView):
         dpis_data = [
             {
                 "id": dpi.id,
-                "patient_nom": dpi.patient.user.nom,
-                "patient_prenom": dpi.patient.user.prenom,
+                 "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                 ],
                 "mutuelle": dpi.mutuelle,
                 "poids": dpi.poids,
                 "groupe_sanguin": dpi.groupe_sanguin,
@@ -113,6 +126,21 @@ class ListeDPIParPatientView(APIView):
             dpis_data = [
                 {
                     "id": dpi.id,
+                    "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                    ],
                     "mutuelle": dpi.mutuelle,
                     "poids": dpi.poids,
                     "groupe_sanguin": dpi.groupe_sanguin,
@@ -195,7 +223,7 @@ class ListeTousPatientsView(APIView):
         ]
         return Response(patients_data, status=status.HTTP_200_OK)
 class CreateDPIView(APIView):
-    permission_classes = [IsAuthenticated]
+   # permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -271,6 +299,22 @@ class RechercherDPIParNumSecuView(APIView):
             dpis_data = [
                 {
                     "id": dpi.id,
+
+                    "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                    ],
                     "mutuelle": dpi.mutuelle,
                     "poids": dpi.poids,
                     "groupe_sanguin": dpi.groupe_sanguin,
@@ -328,6 +372,9 @@ class ListePatientsParMedecinView(APIView):
                     "date_naissance": dpi.patient.birth_date,
                     "numero_securite_sociale": dpi.patient.social_security_number,
                     "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
                 }
                 for dpi in dpis
             ]
