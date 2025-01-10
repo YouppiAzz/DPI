@@ -12,8 +12,15 @@ import { UserDetailsComponent } from './pages/account-management/user-details/us
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 
+import { LoginComponent } from './pages/auth/login.component';
+import { SignupComponent } from './pages/auth/signup.component';
+
 export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent},
+
   { path: 'home', component: HomeComponent },
 
   { path: 'dpi-management', component: DpiManagementComponent },

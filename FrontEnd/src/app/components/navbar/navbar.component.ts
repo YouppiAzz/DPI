@@ -14,5 +14,5 @@ import { NgIconComponent } from '@ng-icons/core';
   viewProviders: [provideIcons({ dripHome, dripFolder, dripUserGroup, dripBell, dripGear, dripExit })]
 })
 export class NavbarComponent {
-
+  
 }

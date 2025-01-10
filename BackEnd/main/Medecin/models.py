@@ -1,13 +1,9 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
 from django.contrib.auth.models import AbstractUser
-from django.db import models
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -29,14 +25,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('medecin', 'Medecin'),
         ('infirmier', 'Infirmier'),
         ('patient', 'Patient'),
+        ('radiologue', 'Radiologue'),
+        ('laboratorian', 'Laboratorian'),
     )
-
+    id = models.AutoField(primary_key=True)  # AutoField automatically increments integer IDs
     email = models.EmailField(unique=True)
     nom = models.CharField(max_length=50)
     prenom = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # For admin users
-    user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
+    user_type = models.CharField(max_length=15, choices=USER_TYPES, default='patient')
 
     objects = CustomUserManager()
 
@@ -122,4 +120,13 @@ class Consultation(models.Model):
             raise ValueError("Le résumé doit être une chaîne de caractères.")
         self.resume = texte
         self.save()  # Sauvegarde les modifications dans la base de données
+#**************************************************************
+class Notification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
+    date = models.DateField(auto_now_add=True)  # Automatically set the date to today
+    time = models.TimeField(auto_now_add=True)  # Automatically set the time to now
+    content = models.TextField()  # Content of the notification
+
+    def __str__(self):
+        return f"Notification for {self.user.nom} {self.user.prenom} on {self.date} at {self.time}"
 

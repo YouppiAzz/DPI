@@ -1,109 +1,443 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
+
+
+# views.py
 from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Medecin
-from Patient.models import Patient
+from Medecin.models import CustomUser
 
+class CustomLoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-
-class Laborantin:
-    pass
-class Radiologue:
-    pass
-class Infirmier:
-    pass
-
-@api_view(['POST'])
-def login(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
-
-    # Authenticate the user
-    user = authenticate(request, username=email, password=password)
-
-    if user:
-        # Generate a refresh token for the authenticated user
-        refresh = RefreshToken.for_user(user)
-
-        # Try to get the user type (Medecin, Patient, Infirmier, Labo, Radiologue)
+        # Check if the user exists
         try:
-            # Check if user is a Medecin
-            medecin = Medecin.objects.get(user=user)
-            return Response({
-                'token': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'nom': medecin.nom,
-                    'prenom': medecin.prenom,
-                    'specialite': medecin.specialite,
-                    'user_type': 'medecin'
-                }
-            })
-        except Medecin.DoesNotExist:
-            pass
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        try:
-            # Check if user is a Patient
-            patient = Patient.objects.get(user=user)
+        # Authenticate the user
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            # Generate JWT token
+            refresh = RefreshToken.for_user(user)
             return Response({
-                'token': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'first_name': patient.first_name,
-                    'last_name': patient.last_name,
-                    'medical_insurance_provider': patient.medical_insurance_provider,
-                    'user_type': 'patient'
-                }
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user_type": user.user_type  # Return the user's role for frontend handling
             })
+        else:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Medecin, Ordonnance, Consultation, Notification
+from Patient.models import Patient,DPI
+class ListeDPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        dpis = DPI.objects.all()
+        dpis_data = [
+            {
+                "id": dpi.id,
+                 "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                 ],
+                "mutuelle": dpi.mutuelle,
+                "poids": dpi.poids,
+                "groupe_sanguin": dpi.groupe_sanguin,
+                "medecin_traitant": dpi.medecin_traitant.user.nom,
+                "date_creation": dpi.date_creation,
+                "soins": [
+                    {
+                        "id": soin.id,
+                        "observation": soin.observation,
+                        "administration_medicaments": soin.administration_medicaments,
+                        "soins": soin.soins,
+                    }
+                    for soin in dpi.soins.all()
+                ],
+                "consultations": [
+                    {
+                        "id": consultation.id,
+                        "date_consultation": consultation.date_consultation,
+                        "resume": consultation.resume,
+                        "medecin_traitant": consultation.medecin_traitant.user.nom,
+                        "bilans": [
+                            {
+                                "id": bilan.id,
+                                "type": bilan.type,
+                                "date_bilan": bilan.date_bilan,
+                                "resultat": {
+                                    "parametre": bilan.resultat.parametre,
+                                    "valeurs": bilan.resultat.valeurs,
+                                    "unite": bilan.resultat.unite,
+                                } if bilan.resultat else None,
+                            }
+                            for bilan in consultation.bilans.all()
+                        ],
+                        "ordonnances": [
+                            {
+                                "id": ordonnance.id,
+                                "date": ordonnance.date,
+                                "medicaments": [
+                                    {
+                                        "nom": medicament.nom,
+                                        "dosage": medicament.dosage,
+                                        "duree": medicament.duree,
+                                    }
+                                    for medicament in ordonnance.medicaments.all()
+                                ],
+                            }
+                            for ordonnance in consultation.ordonnances.all()
+                        ],
+                    }
+                    for consultation in dpi.consultations.all()
+                ],
+            }
+            for dpi in dpis
+        ]
+        return Response(dpis_data, status=status.HTTP_200_OK)
+
+class ListeDPIParPatientView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, patient_id):
+        try:
+            patient = Patient.objects.get(id=patient_id)
+            dpis = DPI.objects.filter(patient=patient)
+            dpis_data = [
+                {
+                    "id": dpi.id,
+                    "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                    ],
+                    "mutuelle": dpi.mutuelle,
+                    "poids": dpi.poids,
+                    "groupe_sanguin": dpi.groupe_sanguin,
+                    "medecin_traitant": dpi.medecin_traitant.user.nom,
+                    "date_creation": dpi.date_creation,
+                    "soins": [
+                        {
+                            "id": soin.id,
+                            "observation": soin.observation,
+                            "administration_medicaments": soin.administration_medicaments,
+                            "soins": soin.soins,
+                        }
+                        for soin in dpi.soins.all()
+                    ],
+                    "consultations": [
+                        {
+                            "id": consultation.id,
+                            "date_consultation": consultation.date_consultation,
+                            "resume": consultation.resume,
+                            "medecin_traitant": consultation.medecin_traitant.user.nom,
+                            "bilans": [
+                                {
+                                    "id": bilan.id,
+                                    "type": bilan.type,
+                                    "date_bilan": bilan.date_bilan,
+                                    "resultat": {
+                                        "parametre": bilan.resultat.parametre,
+                                        "valeurs": bilan.resultat.valeurs,
+                                        "unite": bilan.resultat.unite,
+                                    } if bilan.resultat else None,
+                                }
+                                for bilan in consultation.bilans.all()
+                            ],
+                            "ordonnances": [
+                                {
+                                    "id": ordonnance.id,
+                                    "date": ordonnance.date,
+                                    "medicaments": [
+                                        {
+                                            "nom": medicament.nom,
+                                            "dosage": medicament.dosage,
+                                            "duree": medicament.duree,
+                                        }
+                                        for medicament in ordonnance.medicaments.all()
+                                    ],
+                                }
+                                for ordonnance in consultation.ordonnances.all()
+                            ],
+                        }
+                        for consultation in dpi.consultations.all()
+                    ],
+                }
+                for dpi in dpis
+            ]
+            return Response(dpis_data, status=status.HTTP_200_OK)
         except Patient.DoesNotExist:
-            pass
+            return Response({"error": "Patient non trouvé"}, status=status.HTTP_404_NOT_FOUND)    
 
+
+class ListeTousPatientsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        patients = Patient.objects.all()
+        patients_data = [
+            {
+                "id": patient.id,
+                "nom": patient.user.nom,
+                "prenom": patient.user.prenom,
+                "email": patient.user.email,  # Ajout de l'email
+                "numero_securite_sociale": patient.social_security_number,
+                "date_naissance": patient.birth_date,
+                "adresse": patient.address,
+                "telephone": patient.phone_number,
+                "fournisseur_assurance_maladie": patient.medical_insurance_provider,
+                "contact_urgence_nom": patient.emergency_contact_name,
+                "contact_urgence_telephone": patient.emergency_contact_phone,
+            }
+            for patient in patients
+        ]
+        return Response(patients_data, status=status.HTTP_200_OK)
+class CreateDPIView(APIView):
+   # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
         try:
-            # Check if user is an Infirmier
-            infirmier = Infirmier.objects.get(user=user)
-            return Response({
-                'token': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'user_type': 'infirmier'
-                }
-            })
-        except Infirmier.DoesNotExist:
-            pass
+            patient_id = request.data.get("patient_id")
+            if not patient_id:
+                return Response({"error": "L'ID du patient est requis"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            patient = Patient.objects.get(id=patient_id)
 
+            medecin_id = request.data.get("medecin_traitant")
+            if not medecin_id:
+                return Response({"error": "L'ID du médecin traitant est requis"}, status=status.HTTP_400_BAD_REQUEST)
+
+            medecin = Medecin.objects.get(id=medecin_id)
+
+            mutuelle = request.data.get("mutuelle")
+            poids = request.data.get("poids")
+            groupe_sanguin = request.data.get("groupe_sanguin")
+
+            # Création du DPI sans spécifier `date_creation`
+            dpi = DPI.objects.create(
+                patient=patient,
+                mutuelle=mutuelle,
+                poids=poids,
+                groupe_sanguin=groupe_sanguin,
+                medecin_traitant=medecin
+            )
+
+            dpi.soins.set([])  # Initialise les soins avec une liste vide
+            dpi.consultations.set([])  # Initialise les consultations avec une liste vide
+            dpi.save()
+
+            return Response(
+                {
+                    "message": "DPI créé avec succès",
+                    "dpi": {
+                        "id": dpi.id,
+                        "patient_nom": dpi.patient.user.nom,
+                        "patient_prenom": dpi.patient.user.prenom,
+                        "medecin_traitant": dpi.medecin_traitant.user.nom,
+                        "mutuelle": dpi.mutuelle,
+                        "poids": dpi.poids,
+                        "groupe_sanguin": dpi.groupe_sanguin,
+                        "date_creation": dpi.date_creation,  # La date est automatiquement définie
+                        "soins": [],
+                        "consultations": [],
+                    }
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Patient.DoesNotExist:
+            return Response({"error": "Patient introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        except Medecin.DoesNotExist:
+            return Response({"error": "Médecin introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+class RechercherDPIParNumSecuView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, num_securite_sociale):
         try:
-            # Check if user is a Labo staff
-            laborantin = Laborantin.objects.get(user=user)
-            return Response({
-                'token': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'user_type': 'labo'
-                }
-            })
-        except Laborantin.DoesNotExist:
-            pass
+            # Rechercher le patient par son numéro de sécurité sociale
+            patient = Patient.objects.get(social_security_number=num_securite_sociale)
 
+            # Récupérer les DPI associés à ce patient
+            dpis = DPI.objects.filter(patient=patient)
+
+            if not dpis.exists():
+                return Response({"error": "Aucun DPI trouvé pour ce patient"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Formatage des données des DPI
+            dpis_data = [
+                {
+                    "id": dpi.id,
+
+                    "patient":[
+                   {            
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
+                   }
+                    ],
+                    "mutuelle": dpi.mutuelle,
+                    "poids": dpi.poids,
+                    "groupe_sanguin": dpi.groupe_sanguin,
+                    "medecin_traitant": dpi.medecin_traitant.user.nom,
+                    "date_creation": dpi.date_creation,
+                    "soins": [
+                        {
+                            "id": soin.id,
+                            "observation": soin.observation,
+                            "administration_medicaments": soin.administration_medicaments,
+                            "soins": soin.soins,
+                        }
+                        for soin in dpi.soins.all()
+                    ],
+                    "consultations": [
+                        {
+                            "id": consultation.id,
+                            "date_consultation": consultation.date_consultation,
+                            "resume": consultation.resume,
+                            "medecin_traitant": consultation.medecin_traitant.user.nom,
+                        }
+                        for consultation in dpi.consultations.all()
+                    ],
+                }
+                for dpi in dpis
+            ]
+
+            return Response(dpis_data, status=status.HTTP_200_OK)
+
+        except Patient.DoesNotExist:
+            return Response({"error": "Patient avec ce numéro de sécurité sociale introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+class ListePatientsParMedecinView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, medecin_id):
         try:
-            # Check if user is a Radiologue
-            radiologue = Radiologue.objects.get(user=user)
-            return Response({
-                'token': str(refresh.access_token),
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'user_type': 'radiologue'
+            # Rechercher le médecin par son ID
+            medecin = Medecin.objects.get(id=medecin_id)
+
+            # Récupérer les DPI associés à ce médecin (les patients associés)
+            dpis = DPI.objects.filter(medecin_traitant=medecin)
+
+            if not dpis.exists():
+                return Response({"error": "Aucun patient trouvé pour ce médecin"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Formatage des données des patients
+            patients_data = [
+                {
+                    "id": dpi.patient.id,
+                    "nom": dpi.patient.user.nom,
+                    "prenom": dpi.patient.user.prenom,
+                    "adresse": dpi.patient.address,
+                    "telephone": dpi.patient.phone_number,
+                    "date_naissance": dpi.patient.birth_date,
+                    "numero_securite_sociale": dpi.patient.social_security_number,
+                    "email": dpi.patient.user.email,
+                    "emergency_contact_name":dpi.patient. emergency_contact_name,
+                    "emergency_contact_phone":dpi.patient.emergency_contact_phone,
+                    "medical_insurance_provider":dpi.patient. medical_insurance_provider,
                 }
-            })
-        except Radiologue.DoesNotExist:
-            pass
+                for dpi in dpis
+            ]
 
-        # If no matching user type found
-        return Response({'error': 'Invalid credentials or user type'}, status=400)
+            return Response(patients_data, status=status.HTTP_200_OK)
 
-    return Response({'error': 'Invalid credentials'}, status=400)
+        except Medecin.DoesNotExist:
+            return Response({"error": "Médecin introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
+class NotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id):
+        try:
+            notifications = Notification.objects.filter(user_id=user_id)
+            
+            if not notifications.exists():
+                return Response({"message": "Aucune notification trouvée"}, status=status.HTTP_404_NOT_FOUND)
+
+            data = [
+                {
+                    "user_id": notification.user_id,
+                    "user_nom": notification.user.nom,
+                    "user_prenom": notification.user.prenom,
+                    "date": notification.date,
+                    "time": notification.time,
+                    "content": notification.content,
+                }
+                for notification in notifications
+            ]
+            
+            return Response(data, status=status.HTTP_200_OK)
+                
+            
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+class AddNotificationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+
+            content = request.data.get("content")
+            if not content:
+                return Response({"error": "Le contenu de la notification est obligatoire"}, status=status.HTTP_400_BAD_REQUEST)
+
+            notification = Notification.objects.create(user=user, content=content)
+            notification.save()
+
+            return Response(
+                {
+                    "message": "Notification added successfully.",
+                    "notification": {
+                        "user_id": notification.user.id,
+                        "user_name": f"{notification.user.nom} {notification.user.prenom}",
+                        "date": notification.date,
+                        "time": notification.time,
+                        "content": notification.content,
+                    },
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)

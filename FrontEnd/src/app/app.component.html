@@ -1,9 +1,8 @@
 <div class="h-[100%] w-[100%] flex">
-  <div class="w-[20%]">
-   <app-navbar></app-navbar>
+  <div class="w-[20%]" *ngIf="!isAuthRoute()">
+    <app-navbar></app-navbar>
   </div>
-  <main class="w-[80%]">
+  <main [ngClass]="{'w-[80%]': !isAuthRoute(), 'w-[100%]': isAuthRoute()}">
     <router-outlet></router-outlet>
   </main>
 </div>
-

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from Medecin.models import Medecin, Soin, Consultation,CustomUser
 
 
+
 class Patient(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='patient_profile')
     social_security_number = models.CharField(max_length=20, unique=True)

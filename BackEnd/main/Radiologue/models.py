@@ -8,7 +8,7 @@ class Radiologue(models.Model):
     Domaine = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Radiologue {self.user.nom} {self.user.prenom} - {self.specialite}"
+        return f"Radiologue {self.user.nom} {self.user.prenom} - {self.Domaine}"
 
 
 # ********************************************************
