@@ -2,7 +2,7 @@
   <div class="w-[20%]" *ngIf="!isAuthRoute()">
     <app-navbar></app-navbar>
   </div>
-  <main [ngClass]="{'w-[80%]': !isAuthRoute(), 'w-[100%]': isAuthRoute()}">
+  <main [ngClass]="{ 'w-[80%]': !isAuthRoute(), 'w-[100%]': isAuthRoute() }">
     <router-outlet></router-outlet>
   </main>
 </div>

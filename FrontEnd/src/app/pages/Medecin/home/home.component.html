@@ -1,0 +1,81 @@
+<!-- home.component.html -->
+<div class="flex flex-col h-screen">
+  <app-header
+    [pageName]="'Tableau de bord médical'"
+    [isSearchActive]="false"
+    [userRole]="role"
+    [userName]="currentMedecin"
+  >
+  </app-header>
+
+  <div class="flex-1 px-2 overflow-hidden">
+    <!-- Doctor-specific actions -->
+    <div class="flex items-center justify-end px-4 gap-x-5">
+      <a
+        routerLink="/dpi-management/creer-dossier"
+        class="ease-in-out duration-200 bg-[#5DADE2] text-white hover:bg-[#4a8cb3] rounded-[10px] text-[20px] px-8 py-[10px]"
+      >
+        Nouveau Dossier
+      </a>
+    </div>
+
+    <!-- Statistics -->
+    <div class="bg-white rounded-[16px] mt-6 py-8 flex items-center">
+      <div class="border-gray-400 border-r-[1px] w-1/2">
+        <p class="text-[48px] text-center leading-none mb-2">
+          {{ patientsCount }}
+        </p>
+        <p class="text-gray-500 text-center leading-none">Patients suivis</p>
+      </div>
+      <div class="w-1/2">
+        <p class="text-[48px] text-center leading-none mb-2">
+          {{ dossiers.length }}
+        </p>
+        <p class="text-gray-500 text-center leading-none">Dossiers actifs</p>
+      </div>
+    </div>
+
+    <!-- Recent Dossiers -->
+    <p class="pt-6 text-[24px] font-semibold leading-none">Dossiers récents</p>
+    <div
+      class="bg-white rounded-[16px] mt-6 px-8 h-[calc(100%-300px)] overflow-hidden"
+    >
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="flex justify-center items-center h-full">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5DADE2]"
+        ></div>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="errorMessage" class="text-red-500 text-center py-4">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Data Display -->
+      <div *ngIf="!isLoading && !errorMessage">
+        <div class="flex py-4 text-[#6A6A6A] border-b border-gray-200">
+          <p class="w-[25%]">Patient</p>
+          <p class="w-[25%]">Dernière consultation</p>
+          <p class="w-[25%]">Prochain rendez-vous</p>
+          <p class="w-[25%]">État</p>
+        </div>
+
+        <div
+          *ngIf="dossiers.length === 0; else dossiersList"
+          class="flex flex-col items-center justify-center h-[calc(100%-48px)] text-[#6A6A6A] text-[20px] gap-y-[15px] leading-none"
+        >
+          <p>Aucun dossier récent</p>
+          <img src="assets/img/foldericon.svg" alt="" />
+        </div>
+
+        <ng-template #dossiersList>
+          <div class="h-[calc(100%-48px)] overflow-y-auto">
+            <app-dossier *ngFor="let dossier of dossiers" [dossier]="dossier">
+            </app-dossier>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

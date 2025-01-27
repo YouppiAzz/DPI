@@ -1,155 +1,198 @@
 <div class="min-h-screen flex items-center justify-center">
-    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-      
-      <!-- Header -->
-      <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-900">Créer un compte</h2>
-        <p class="mt-2 text-sm text-gray-600">
-          Ou
-          <a routerLink="/login" class="font-medium text-[#5DADE2] hover:text-[#5DADE2]">
-            connectez-vous à votre compte existant
-          </a>
-        </p>
+  <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+    <!-- Header -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-gray-900">Créer un compte</h2>
+      <p class="mt-2 text-sm text-gray-600">
+        Ou
+        <a
+          routerLink="/login"
+          class="font-medium text-[#5DADE2] hover:text-[#5DADE2]"
+        >
+          connectez-vous à votre compte existant
+        </a>
+      </p>
+    </div>
+
+    <!-- Signup Form -->
+    <form
+      [formGroup]="signupForm"
+      (ngSubmit)="onSubmit()"
+      class="mt-8 space-y-6"
+    >
+      <div class="space-y-4">
+        <!-- First Name Field -->
+        <div>
+          <label
+            for="firstName"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Prénom
+          </label>
+          <div class="mt-1">
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
+            />
+          </div>
+          <div
+            *ngIf="
+              signupForm.get('firstName')?.touched &&
+              signupForm.get('firstName')?.invalid
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            *Champ obligatoire
+          </div>
+        </div>
+
+        <!-- Last Name Field -->
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700">
+            Nom
+          </label>
+          <div class="mt-1">
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
+            />
+          </div>
+          <div
+            *ngIf="
+              signupForm.get('lastName')?.touched &&
+              signupForm.get('lastName')?.invalid
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            *Champ obligatoire
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <div class="mt-1">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
+            />
+          </div>
+          <div
+            *ngIf="
+              signupForm.get('email')?.touched &&
+              signupForm.get('email')?.invalid
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            *Entrer une adresse email valide
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Mot de passe
+          </label>
+          <div class="mt-1">
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
+            />
+          </div>
+          <div
+            *ngIf="
+              signupForm.get('password')?.touched &&
+              signupForm.get('password')?.invalid
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            *Le mot de passe doit contenir au moins 8 caractères
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div>
+          <label
+            for="confirmPassword"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Confirmer le mot de passe
+          </label>
+          <div class="mt-1">
+            <input
+              id="confirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              required
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
+            />
+          </div>
+          <div
+            *ngIf="
+              signupForm.get('confirmPassword')?.touched &&
+              signupForm.hasError('passwordMismatch')
+            "
+            class="mt-1 text-sm text-red-600"
+          >
+            *Les mots de passe ne correspondent pas
+          </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="flex items-center">
+          <input
+            id="acceptTerms"
+            type="checkbox"
+            formControlName="acceptTerms"
+            required
+            class="h-4 w-4 text-[#5DADE2] focus:ring-[#5DADE2] border-gray-300 rounded"
+          />
+          <label for="acceptTerms" class="ml-2 block text-sm text-gray-900">
+            J'accepte les
+            <a href="#" class="text-[#5DADE2]">conditions d'utilisation</a>
+          </label>
+        </div>
+        <div
+          *ngIf="
+            signupForm.get('acceptTerms')?.touched &&
+            signupForm.get('acceptTerms')?.invalid
+          "
+          class="mt-1 text-sm text-red-600"
+        >
+          *Vous devez accepter les conditions d'utilisation
+        </div>
       </div>
 
-      <!-- Signup Form -->
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
-        <div class="space-y-4">
-          <!-- First Name Field -->
-          <div>
-            <label for="firstName" class="block text-sm font-medium text-gray-700">
-              Prénom
-            </label>
-            <div class="mt-1">
-              <input
-                id="firstName"
-                type="text"
-                formControlName="firstName"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
-              />
-            </div>
-            <div *ngIf="signupForm.get('firstName')?.touched && signupForm.get('firstName')?.invalid" 
-                class="mt-1 text-sm text-red-600">
-              *Champ obligatoire
-            </div>
-          </div>
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          [disabled]="signupForm.invalid || isLoading"
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#5DADE2] hover:bg-[#5DADE2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5DADE2] disabled:opacity-50"
+        >
+          <span *ngIf="!isLoading">S'inscrire</span>
+          <span *ngIf="isLoading">Loading...</span>
+        </button>
+      </div>
 
-          <!-- Last Name Field -->
-          <div>
-            <label for="lastName" class="block text-sm font-medium text-gray-700">
-              Nom
-            </label>
-            <div class="mt-1">
-              <input
-                id="lastName"
-                type="text"
-                formControlName="lastName"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
-              />
-            </div>
-            <div *ngIf="signupForm.get('lastName')?.touched && signupForm.get('lastName')?.invalid" 
-                class="mt-1 text-sm text-red-600">
-              *Champ obligatoire
-            </div>
-          </div>
-
-          <!-- Email Field -->
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <div class="mt-1">
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
-              />
-            </div>
-            <div *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid" 
-                class="mt-1 text-sm text-red-600">
-              *Entrer une adresse email valide
-            </div>
-          </div>
-
-          <!-- Password Field -->
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">
-              Mot de passe
-            </label>
-            <div class="mt-1">
-              <input
-                id="password"
-                type="password"
-                formControlName="password"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
-              />
-            </div>
-            <div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid" 
-                class="mt-1 text-sm text-red-600">
-              *Le mot de passe doit contenir au moins 8 caractères
-            </div>
-          </div>
-
-          <!-- Confirm Password Field -->
-          <div>
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
-              Confirmer le mot de passe
-            </label>
-            <div class="mt-1">
-              <input
-                id="confirmPassword"
-                type="password"
-                formControlName="confirmPassword"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#5DADE2] focus:border-[#5DADE2]"
-              />
-            </div>
-            <div *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.hasError('passwordMismatch')" 
-                class="mt-1 text-sm text-red-600">
-              *Les mots de passe ne correspondent pas
-            </div>
-          </div>
-
-          <!-- Terms and Conditions -->
-          <div class="flex items-center">
-            <input
-              id="acceptTerms"
-              type="checkbox"
-              formControlName="acceptTerms"
-              required
-              class="h-4 w-4 text-[#5DADE2] focus:ring-[#5DADE2] border-gray-300 rounded"
-            />
-            <label for="acceptTerms" class="ml-2 block text-sm text-gray-900">
-              J'accepte les <a href="#" class="text-[#5DADE2]">conditions d'utilisation</a>
-            </label>
-          </div>
-          <div *ngIf="signupForm.get('acceptTerms')?.touched && signupForm.get('acceptTerms')?.invalid" 
-              class="mt-1 text-sm text-red-600">
-            *Vous devez accepter les conditions d'utilisation
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div>
-          <button
-            type="submit"
-            [disabled]="signupForm.invalid || isLoading"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#5DADE2] hover:bg-[#5DADE2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5DADE2] disabled:opacity-50"
-          >
-            <span *ngIf="!isLoading">S'inscrire</span>
-            <span *ngIf="isLoading">Loading...</span>
-          </button>
-        </div>
-
-        <!-- Error Message -->
-        <div *ngIf="errorMessage" class="mt-2 text-sm text-red-600 text-center">
-          {{ errorMessage }}
-        </div>
-      </form>
-    </div>
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="mt-2 text-sm text-red-600 text-center">
+        {{ errorMessage }}
+      </div>
+    </form>
   </div>
+</div>

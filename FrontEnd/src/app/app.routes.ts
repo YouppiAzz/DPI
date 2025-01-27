@@ -7,7 +7,7 @@ import { DossierDetailsComponent } from './pages/dpi-management/dossier-details/
 
 import { AccountManagementComponent } from './pages/account-management/account-management.component';
 import { CreerUserComponent } from './pages/account-management/creer-user/creer-user.component';
-import { UserDetailsComponent } from './pages/account-management/user-details/user-details.component'
+import { UserDetailsComponent } from './pages/account-management/user-details/user-details.component';
 
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -15,11 +15,14 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { LoginComponent } from './pages/auth/login.component';
 import { SignupComponent } from './pages/auth/signup.component';
 
+import { MedecinHomeComponent } from './pages/Medecin/home/home.component';
+import { AuthGuard } from './pages/auth/auth.guard';
+
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/signup', pathMatch: 'full' },
 
   { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent},
+  { path: 'signup', component: SignupComponent },
 
   { path: 'home', component: HomeComponent },
 
@@ -32,5 +35,11 @@ export const routes: Routes = [
   { path: 'account-management/user/:id', component: UserDetailsComponent },
 
   { path: 'notifications', component: NotificationsComponent },
-  { path: 'settings', component: SettingsComponent }
+  { path: 'settings', component: SettingsComponent },
+  {
+    path: 'medecin/home',
+    component: MedecinHomeComponent,
+    // canActivate: [AuthGuard],
+    data: { requiredRole: 'medecin' },
+  },
 ];

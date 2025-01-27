@@ -7,21 +7,22 @@ import { Input } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
   standalone: true,
   imports: [NgIcon, NgIconComponent, NgIf, RouterModule],
-  viewProviders: [provideIcons({ dripBell, dripSearch })]
+  viewProviders: [provideIcons({ dripBell, dripSearch })],
 })
 export class HeaderComponent {
-
-  @Input() pageName : string = "";
+  @Input() pageName: string = '';
 
   @Input() isSearchActive: boolean = true;
+
+  @Input() userName: string = '';
+
+  @Input() userRole: string = '';
 
   constructor(private searchService: SearchService) {}
 

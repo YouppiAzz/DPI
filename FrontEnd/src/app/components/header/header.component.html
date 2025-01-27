@@ -1,6 +1,5 @@
 <div class="flex items-center justify-between px-8 py-6">
-
-  <p class="font-bold text-[24px]">{{pageName}}</p>
+  <p class="font-bold text-[24px]">{{ pageName }}</p>
 
   <div class="relative w-1/3">
     <div class="flex items-center" *ngIf="isSearchActive">
@@ -9,7 +8,7 @@
         type="text"
         placeholder="Rechercher un dossier..."
         class="w-full px-4 py-2 pl-10 bg-gray-100 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
->
+      />
       <ng-icon
         name="dripSearch"
         class="absolute left-3 text-gray-400 text-[20px]"
@@ -18,14 +17,15 @@
   </div>
 
   <div class="flex items-center gap-x-[24px]">
-    <a routerLink="/notifications"><ng-icon name="dripBell" class="text-[20px] cursor-pointer"/></a>
+    <a routerLink="/notifications"
+      ><ng-icon name="dripBell" class="text-[20px] cursor-pointer"
+    /></a>
     <button class="flex items-center gap-x-[6px]">
-      <img src="assets/img/user.svg" alt="user img">
-        <div>
-          <p class="font-medium text-[16px]">Amine Douba</p>
-          <p class="font-regular opacity-50 text-[12px]">Administrateur</p>
-        </div>
+      <img src="assets/img/user.svg" alt="user img" />
+      <div>
+        <p class="font-medium text-[16px]">{{ userName }}</p>
+        <p class="font-regular opacity-50 text-[12px]">{{ userRole }}</p>
+      </div>
     </button>
   </div>
-
 </div>

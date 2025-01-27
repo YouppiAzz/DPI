@@ -2,10 +2,11 @@ import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 interface LoginResponse {
   access: string;
-  refresh: string; 
+  refresh: string;
   user: {
     id: string;
     email: string;
@@ -31,7 +32,7 @@ interface SignupResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly API_URL = 'http://127.0.0.1:8000';
@@ -42,6 +43,15 @@ export class AuthService {
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
+
+  // Getter for current user value (simplifies access)
+  get currentUserValue(): any {
+    return this.currentUserSubject.value;
+    // return 'Médecin';
+  }
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -71,21 +81,20 @@ export class AuthService {
       const response = await firstValueFrom(
         this.http.post<LoginResponse>(`${this.API_URL}/api/login/`, {
           email,
-          password
+          password,
         })
       );
-  
 
       if (response && response.access && response.user) {
-        this.setInStorage(this.TOKEN_KEY, response.access); 
-        this.setInStorage(this.USER_KEY, JSON.stringify(response.user)); 
-        return response; 
+        this.setInStorage(this.TOKEN_KEY, response.access);
+        this.setInStorage(this.USER_KEY, JSON.stringify(response.user));
+        return response;
       }
-  
+
       throw new Error('Invalid login response');
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error('Login failed: ' + error.message); 
+        throw new Error('Login failed: ' + error.message);
       }
       throw new Error('An error occurred during login');
     }
@@ -104,9 +113,9 @@ export class AuthService {
       throw new Error('Invalid signup response');
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error('Échec de l\'inscription: ' + error.message);
+        throw new Error("Échec de l'inscription: " + error.message);
       }
-      throw new Error('Une erreur est survenue lors de l\'inscription');
+      throw new Error("Une erreur est survenue lors de l'inscription");
     }
   }
 
@@ -134,6 +143,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    // return !!localStorage.getItem('auth_token');
     return !!this.getToken();
   }
 
