@@ -1,0 +1,76 @@
+<nav class="h-screen p-4">
+  <div
+    class="flex flex-col justify-between h-[100%] bg-white rounded-[16px] px-4"
+  >
+    <div class="flex flex-col">
+      <div class="flex justify-center my-4">
+        <img
+          src="assets/img/logo.svg"
+          alt="medixfile image"
+          class="w-32 h-auto"
+        />
+      </div>
+
+      <ul class="flex flex-col gap-y-2">
+        <!-- Home Link -->
+        <a
+          [routerLink]="getRoute('/home')"
+          routerLinkActive="bg-[#5DADE2] text-white"
+          class="hover:bg-[#5DADE2] ease-out duration-300 hover:text-white px-4 py-3 rounded-[12px] flex items-center gap-x-2 cursor-pointer"
+        >
+          <ng-icon name="dripHome" />
+          <p>Accueil</p>
+        </a>
+
+        <!-- DPI Management -->
+        <a
+          [routerLink]="getRoute('/dpi-management')"
+          routerLinkActive="bg-[#5DADE2] text-white"
+          class="hover:bg-[#5DADE2] ease-in duration-100 hover:text-white px-4 py-3 rounded-[12px] flex items-center gap-x-2 cursor-pointer"
+        >
+          <ng-icon name="dripFolder" />
+          <p>Gérer les DPIs</p>
+        </a>
+
+        <!-- Account Management (Admin Only) -->
+        <a
+          routerLink="/account-management"
+          routerLinkActive="bg-[#5DADE2] text-white"
+          class="hover:bg-[#5DADE2] ease-in duration-100 hover:text-white px-4 py-3 rounded-[12px] flex items-center gap-x-2 cursor-pointer"
+        >
+          <ng-icon name="dripUserGroup" />
+          <p>Gérer les comptes</p>
+        </a>
+
+        <!-- Notifications -->
+        <a
+          [routerLink]="getRoute('/notifications')"
+          routerLinkActive="bg-[#5DADE2] text-white"
+          class="hover:bg-[#5DADE2] ease-in duration-100 hover:text-white px-4 py-3 rounded-[12px] flex items-center gap-x-2 cursor-pointer"
+        >
+          <ng-icon name="dripBell" />
+          <p>Notifications</p>
+        </a>
+
+        <!-- Settings -->
+        <a
+          [routerLink]="getRoute('/settings')"
+          routerLinkActive="bg-[#5DADE2] text-white"
+          class="hover:bg-[#5DADE2] ease-in duration-100 hover:text-white px-4 py-3 rounded-[12px] flex items-center gap-x-2 cursor-pointer"
+        >
+          <ng-icon name="dripGear" />
+          <p>Paramètres du Compte</p>
+        </a>
+      </ul>
+    </div>
+
+    <!-- Logout -->
+    <a
+      (click)="logout()"
+      class="hover:text-[#5DADE2] ease-in duration-100 px-4 my-6 flex items-center gap-x-2 cursor-pointer"
+    >
+      <ng-icon name="dripExit" />
+      <p>Déconnexion</p>
+    </a>
+  </div>
+</nav>

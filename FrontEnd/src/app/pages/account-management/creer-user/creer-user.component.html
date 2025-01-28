@@ -1,0 +1,73 @@
+<div class="flex flex-col h-screen">
+  <app-header [pageName]="'Nouveau Compte'" [isSearchActive]="false"></app-header>
+  <div class="flex-1 pb-8 px-8">
+    
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <div class="space-y-2 bg-white rounded-[24px] px-6 py-6 flex items-center gap-x-6">
+        <img src="/assets/img/user.svg" alt="" width="72">
+        <div>
+          <p class="text-xl">{{ userForm.get('nom')?.value || 'Nom' }} {{ userForm.get('prenom')?.value || 'Prénom' }}</p>
+          <p class="text-gray-500">{{ userForm.get('userType')?.value || 'Role' }}</p>
+        </div>
+      </div>
+
+      <p class="py-3 text-xl">Informations du Compte</p>
+
+      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Nom</label>
+            <input type="text" formControlName="nom"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-2">Prénom</label>
+            <input type="text" formControlName="prenom"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+          </div>
+        </div>
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Numéro de sécurité sociale</label>
+          <input type="text" formControlName="numSecu"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Email</label>
+          <input type="email" formControlName="email"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Mot de passe</label>
+          <input type="password" formControlName="password"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+        </div>
+
+        <div class="w-1/2">
+          <label class="block text-sm font-medium mb-2">Rôle</label>
+          <select formControlName="userType" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent">
+            <option value="patient" selected>Patient</option>
+            <option value="medecin">Médecin</option>
+            <option value="infirmier">Infirmier</option>
+            <option value="pharmacien">Pharmacien</option>
+            <option value="laborantin">Laborantin</option>
+            <option value="radiologue">Radiologue</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex gap-4 pt-6">
+        <button type="submit" 
+          class="px-6 py-2 bg-[#5DADE2] text-white rounded-lg hover:bg-[#4a8cb3] transition-colors">
+          Créer le compte
+        </button>
+        <button type="button" (click)="router.navigate(['/account-management'])"
+          class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          Annuler
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

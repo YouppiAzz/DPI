@@ -1,0 +1,25 @@
+<div class="flex flex-col h-screen">
+    <app-header [pageName]="'Notifications'" [isSearchActive]="false"></app-header>
+    <div class="flex-1 px-2 overflow-hidden">
+      <div class="flex items-center justify-between px-12">
+        <div>
+          <p class="font-medium text-[28px] text-center">{{count}}</p>
+          <p class="font-regular opacity-75 text-[16px]">Notifications</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-[16px] mt-6 px-8 h-[calc(100%-110px)] overflow-hidden">
+        <div *ngIf="notifications.length === 0; else notificationsList" class="flex flex-col items-center justify-center h-[calc(100%-48px)] text-[#6A6A6A] text-[20px] gap-y-[15px] leading-none">
+          <p>Aucune notification.</p>
+        </div>
+  
+        <ng-template #notificationsList>
+          <div class="h-[calc(100%-48px)] overflow-y-auto">
+            <div *ngFor="let notification of notifications" class="flex items-center justify-between py-4 border-b border-gray-200">
+                <p>{{notification.type}}: {{notification.message}}</p>
+                <p>{{ notification.date | date:'yyyy-MM-dd' }}-{{notification.time}}</p>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
