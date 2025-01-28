@@ -1,17 +1,19 @@
-
-
 # views.py
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+import hashlib
 from Medecin.models import CustomUser
+
+
+
 
 class CustomLoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+        hashed = hashlib.sha256(password.encode())
+        hex_dig = hashed.hexdigest()
 
         # Check if the user exists
         try:
@@ -20,7 +22,7 @@ class CustomLoginView(APIView):
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Authenticate the user
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=email, password=hex_dig)
         if user is not None:
             # Generate JWT token
             refresh = RefreshToken.for_user(user)
@@ -35,7 +37,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Medecin, Ordonnance, Consultation, Notification
+from .models import Medecin, Notification
 from Patient.models import Patient,DPI
 class ListeDPIView(APIView):
     permission_classes = [IsAuthenticated]
