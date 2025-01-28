@@ -1,5 +1,5 @@
 import uuid
-
+import hashlib
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
@@ -11,7 +11,9 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Email is required')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        hash_object = hashlib.sha256(password.encode())
+        hex_dig = hash_object.hexdigest()
+        user.set_password(hex_dig)
         user.save()
         return user
 
@@ -27,6 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('patient', 'Patient'),
         ('radiologue', 'Radiologue'),
         ('laboratorian', 'Laboratorian'),
+        ('admin','Admin'),
     )
     id = models.AutoField(primary_key=True)  # AutoField automatically increments integer IDs
     email = models.EmailField(unique=True)

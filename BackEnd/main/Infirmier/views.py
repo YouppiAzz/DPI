@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-from .models import SoinPatient
+from .models import SoinPatient, Infirmier
+from main.Patient.models import Patient
+
 
 class PatientSoinView(APIView):
     permission_classes = [IsAuthenticated]
@@ -44,4 +46,45 @@ class PatientSoinView(APIView):
         except SoinPatient.DoesNotExist:
             return Response({"error": "Soin introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-# type here
+class AddSoinPatient(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, infirmier_id, patient_id):
+        try:
+            infirmier = Infirmier.objects.get(id=infirmier_id)
+            patient = Patient.objects.get(id=patient_id)
+
+            observation = request.data.get("observation")
+            administration_medicaments = request.data.get("administration_medicaments")
+            details_soins = request.data.get("details_soins")
+
+            if not details_soins or not observation:
+                return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
+
+            soin = SoinPatient.objects.create(
+                infirmier=infirmier,
+                patient=patient,
+                observation=observation,
+                administration_medicaments=administration_medicaments,
+                details_soins=details_soins
+            )
+            soin.save()
+
+            return Response(
+                {
+                    "success": "Soin ajouté avec succès",
+                    "Soin" : {
+                        "infirmier_id" : soin.infirmier_id,
+                        "patient_id" : soin.patient_id,
+                        "observation" : soin.observation,
+                        "administration_medicaments" : soin.administration_medicaments,
+                        "details_soins" : soin.details_soins
+                    }
+
+                },
+                status=status.HTTP_201_CREATED
+            )
+        except Infirmier.DoesNotExist:
+            return Response({"error": "Infirmier introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        except Patient.DoesNotExist:
+            return Response({"error": "Patient introuvable"}, status=status.HTTP_404_NOT_FOUND)
