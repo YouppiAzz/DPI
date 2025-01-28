@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' }) // Ensure it’s provided globally
 export class DpiService {
-  private apiUrl = 'http://your-django-api/api'; // Replace with your API URL
+  private apiUrl = 'http://127.0.0.1:8000/api';
 
   constructor(private http: HttpClient) {}
 

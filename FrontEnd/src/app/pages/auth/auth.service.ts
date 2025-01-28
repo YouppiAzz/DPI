@@ -35,7 +35,7 @@ interface SignupResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://127.0.0.1:8000';
+  private readonly API_URL = 'http://127.0.0.1:8000/api';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
 

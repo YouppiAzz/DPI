@@ -24,7 +24,11 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
 
-  { path: 'home', component: HomeComponent },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+  },
 
   { path: 'dpi-management', component: DpiManagementComponent },
   { path: 'dpi-management/creer-dossier', component: CreerDossierComponent },
@@ -39,7 +43,7 @@ export const routes: Routes = [
   {
     path: 'medecin/home',
     component: MedecinHomeComponent,
-    // canActivate: [AuthGuard],
-    data: { requiredRole: 'medecin' },
+    canActivate: [AuthGuard],
+    data: { requiredRole: 'Médecin' },
   },
 ];

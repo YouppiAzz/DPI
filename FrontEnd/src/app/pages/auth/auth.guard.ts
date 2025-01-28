@@ -16,11 +16,19 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authService.isLoggedIn()) {
-      return true; // Allow access
-    } else {
-      this.router.navigate(['/login']); // Redirect to login
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
       return false;
     }
+
+    const requiredRole = route.data['requiredRole'];
+    const user = this.authService.getUserData();
+
+    if (requiredRole && user?.role !== requiredRole) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    return true;
   }
 }
