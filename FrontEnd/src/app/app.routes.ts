@@ -17,6 +17,7 @@ import { SignupComponent } from './pages/auth/signup.component';
 
 import { MedecinHomeComponent } from './pages/Medecin/home/home.component';
 import { AuthGuard } from './pages/auth/auth.guard';
+import { InfirmierHomeComponent } from './pages/infirmier/infirmier.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/signup', pathMatch: 'full' },
@@ -42,4 +43,11 @@ export const routes: Routes = [
     // canActivate: [AuthGuard],
     data: { requiredRole: 'medecin' },
   },
+  {
+    path: 'infirmier',
+    component: InfirmierHomeComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'infirmier' }
+  }
+
 ];
