@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-from main.Laboratorian.models import BilanLabRad
+from Laboratorian.models import BilanLabRad
 
 class BilanRadiologueView(APIView):
     permission_classes = [IsAuthenticated]
