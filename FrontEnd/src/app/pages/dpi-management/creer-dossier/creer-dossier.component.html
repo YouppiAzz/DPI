@@ -6,27 +6,21 @@
   <div class="flex-1 pb-8 px-8">
     <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()">
       <!-- Informations du patient -->
-
-      <p class="pb-3 text-xl">Informations du patient</p>
-
       <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-        <div class="flex gap-4 w-full">
-          <div class="w-1/2">
-            <label class="block text-sm font-medium mb-2">Nom</label>
-            <input
-              type="text"
-              formControlName="nom"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
-            />
-          </div>
-          <div class="w-1/2">
-            <label class="block text-sm font-medium mb-2">Prénom</label>
-            <input
-              type="text"
-              formControlName="prenom"
-              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
-            />
-          </div>
+        <p class="pb-3 text-xl">Informations du patient</p>
+
+        <!-- Patient Dropdown -->
+        <div class="w-full">
+          <label class="block text-sm font-medium mb-2">Patient</label>
+          <select
+            formControlName="selectedPatientId"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
+          >
+            <option value="" disabled selected>Sélectionner un patient</option>
+            <option *ngFor="let patient of patients" [value]="patient.id">
+              {{ patient.nom }} {{ patient.prenom }}
+            </option>
+          </select>
         </div>
         <div class="w-1/2">
           <label class="block text-sm font-medium mb-2"
@@ -109,21 +103,35 @@
             <label class="block text-sm font-medium mb-2"
               >Medecin traitant</label
             >
-            <input
-              type="text"
+            <select
               formControlName="medecin"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
-            />
+            >
+              <option value="" disabled>Choisir un médecin</option>
+              <option
+                *ngFor="let doctor of doctors"
+                [value]="doctor.nom + ' ' + doctor.prenom"
+              >
+                {{ doctor.nom }} {{ doctor.prenom }}
+              </option>
+            </select>
           </div>
           <div class="w-1/2">
             <label class="block text-sm font-medium mb-2"
               >Infirmier en charge</label
             >
-            <input
-              type="text"
+            <select
               formControlName="infirmier"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5DADE2] focus:border-transparent"
-            />
+            >
+              <option value="" disabled>Choisir un infirmier</option>
+              <option
+                *ngFor="let nurse of nurses"
+                [value]="nurse.nom + ' ' + nurse.prenom"
+              >
+                {{ nurse.nom }} {{ nurse.prenom }}
+              </option>
+            </select>
           </div>
         </div>
       </div>

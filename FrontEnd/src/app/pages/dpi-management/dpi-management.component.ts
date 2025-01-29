@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { DossierComponent } from '../../components/dossier/dossier.component';
@@ -6,6 +6,7 @@ import { Dossier } from '../../components/dossier/dossier.interface';
 import { NgIf, NgFor } from '@angular/common';
 import { SearchService } from '../../shared/search.service';
 import { DpiService } from '../../services/dpi.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dpi-management',
@@ -13,7 +14,8 @@ import { DpiService } from '../../services/dpi.service';
   templateUrl: './dpi-management.component.html',
   styleUrl: './dpi-management.component.css',
 })
-export class DpiManagementComponent {
+export class DpiManagementComponent implements OnInit {
+  private searchSubscription!: Subscription;
   count = 0;
 
   dossiers: Dossier[] = [
@@ -42,7 +44,6 @@ export class DpiManagementComponent {
     //   medecin: 'Dr. Martin',
     // },
   ];
-
   filteredDossiers: Dossier[] = [];
 
   constructor(
@@ -59,6 +60,10 @@ export class DpiManagementComponent {
       this.count = this.filteredDossiers.length;
     });
   }
+
+  // ngOnDestroy() {
+  //   this.searchSubscription.unsubscribe();
+  // }
 
   ngOnInit() {
     // Load dossiers from backend when component initializes

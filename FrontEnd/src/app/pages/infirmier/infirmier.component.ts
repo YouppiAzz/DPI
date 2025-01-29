@@ -8,8 +8,8 @@ import { NgIf, NgFor } from '@angular/common';
 @Component({
   selector: 'app-infirmier-home',
   imports: [HeaderComponent, DossierComponent, NgIf, NgFor, RouterModule],
-  templateUrl: './infirmier-home.component.html',
-  styleUrl: './infirmier-home.component.css'
+  templateUrl: './infirmier.component.html',
+  styleUrl: './infirmier.component.css',
 })
 export class InfirmierHomeComponent {
   patients: any[] = [
@@ -20,7 +20,7 @@ export class InfirmierHomeComponent {
       chambre: '101',
       etat: 'stable',
       prochainSoin: '10/02/2024',
-      soinEnAttente: true
+      soinEnAttente: true,
     },
     {
       id: 2,
@@ -29,7 +29,7 @@ export class InfirmierHomeComponent {
       chambre: '102',
       etat: 'en observation',
       prochainSoin: '10/02/2024',
-      soinEnAttente: false
+      soinEnAttente: false,
     },
     {
       id: 3,
@@ -38,8 +38,8 @@ export class InfirmierHomeComponent {
       chambre: '103',
       etat: 'critique',
       prochainSoin: '10/02/2024',
-      soinEnAttente: true
-    }
+      soinEnAttente: true,
+    },
   ];
 
   // Statistics
@@ -54,19 +54,22 @@ export class InfirmierHomeComponent {
   filteredPatients = this.patients;
   isLoading = false;
 
-  onSearch(query: string): void {
-    if (!query) {
-      this.filteredPatients = this.patients;
-      return;
-    }
-    
-    query = query.toLowerCase();
-    this.filteredPatients = this.patients.filter(patient => 
-      patient.nom.toLowerCase().includes(query) ||
-      patient.prenom.toLowerCase().includes(query) ||
-      patient.chambre.toLowerCase().includes(query)
-    );
-  }
+  // onSearch(query: string): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   const searchQuery = inputElement.value;
+  //   if (!query) {
+  //     this.filteredPatients = this.patients;
+  //     return;
+  //   }
+
+  //   query = query.toLowerCase();
+  //   this.filteredPatients = this.patients.filter(
+  //     (patient) =>
+  //       patient.nom.toLowerCase().includes(query) ||
+  //       patient.prenom.toLowerCase().includes(query) ||
+  //       patient.chambre.toLowerCase().includes(query)
+  //   );
+  // }
 
   getStatusClass(status: string): string {
     const baseClasses = 'px-2 py-1 rounded-full text-sm';

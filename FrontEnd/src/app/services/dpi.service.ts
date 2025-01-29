@@ -54,12 +54,28 @@ export class DpiService {
     );
   }
 
-  // Helper function to find a doctor by name
-  private findDoctorByName(users: User[], nom: string): User | undefined {
+  // Updated helper function to find a doctor by full name
+  private findDoctorByName(users: User[], fullName: string): User | undefined {
+    // Split the full name into nom and prenom
+    const [nom, prenom] = fullName.split(' ').map((part) => part.trim());
+
     return users.find(
       (user) =>
         user.nom.toLowerCase() === nom.toLowerCase() &&
+        user.prenom?.toLowerCase() === prenom?.toLowerCase() && // Handle optional prenom
         user.user_type === 'medecin'
+    );
+  }
+
+  private findNurseByName(users: User[], fullName: string): User | undefined {
+    // Split the full name into nom and prenom
+    const [nom, prenom] = fullName.split(' ').map((part) => part.trim());
+
+    return users.find(
+      (user) =>
+        user.nom.toLowerCase() === nom.toLowerCase() &&
+        user.prenom?.toLowerCase() === prenom?.toLowerCase() && // Handle optional prenom
+        user.user_type === 'infirmier'
     );
   }
 
@@ -98,10 +114,17 @@ export class DpiService {
           return throwError(() => new Error('Doctor not found in the system'));
         }
 
+        // Find the nurse in the userss list
+        const nurse = this.findNurseByName(users, dossierData.infirmier);
+        if (!nurse) {
+          return throwError(() => new Error('Nurse not found in the system'));
+        }
+
         // Prepare the data according to backend expectations
         const dpiData = {
           patient_id: patient.id,
           medecin_traitant_id: doctor.id,
+          infirmier_id: nurse.id,
           // Include other required fields
           mutuelle: dossierData.mutuelle || '',
           poids: dossierData.poids || null,

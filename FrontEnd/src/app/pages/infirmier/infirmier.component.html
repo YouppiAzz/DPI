@@ -1,12 +1,12 @@
 <div class="flex flex-col h-screen">
-  <app-header
+  <!-- <app-header
     [pageName]="'Tableau de bord infirmier'"
     [isSearchActive]="true"
     [userRole]="role"
     [userName]="currentInfirmier"
     (searchQuery)="onSearch($event)"
   >
-  </app-header>
+  </app-header> -->
 
   <div class="flex-1 px-2 overflow-hidden">
     <!-- Statistics -->
@@ -27,7 +27,9 @@
         <p class="text-[48px] text-center leading-none mb-2">
           {{ completedSoinsCount }}
         </p>
-        <p class="text-gray-500 text-center leading-none">Soins effectués aujourd'hui</p>
+        <p class="text-gray-500 text-center leading-none">
+          Soins effectués aujourd'hui
+        </p>
       </div>
     </div>
 
@@ -66,14 +68,21 @@
           <img src="assets/img/patient-icon.svg" alt="" />
         </div>
 
-        <div *ngIf="filteredPatients.length > 0" class="h-[calc(100%-48px)] overflow-y-auto">
-          <div *ngFor="let patient of filteredPatients" 
-               class="flex items-center py-4 border-b border-gray-100">
+        <div
+          *ngIf="filteredPatients.length > 0"
+          class="h-[calc(100%-48px)] overflow-y-auto"
+        >
+          <div
+            *ngFor="let patient of filteredPatients"
+            class="flex items-center py-4 border-b border-gray-100"
+          >
             <p class="w-[20%]">{{ patient.nom }} {{ patient.prenom }}</p>
             <p class="w-[20%]">{{ patient.chambre }}</p>
-            <p class="w-[20%]">{{ patient.prochainSoin | date:'short' }}</p>
+            <!-- <p class="w-[20%]">{{ patient.prochainSoin | date : "short" }}</p> -->
             <p class="w-[20%]">
-              <span [class]="getStatusClass(patient.etat)">{{ patient.etat }}</span>
+              <span [class]="getStatusClass(patient.etat)">{{
+                patient.etat
+              }}</span>
             </p>
             <div class="w-[20%] flex gap-x-2">
               <button

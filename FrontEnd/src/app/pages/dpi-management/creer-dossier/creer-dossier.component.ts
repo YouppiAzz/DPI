@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,27 +8,33 @@ import {
 import { HeaderComponent } from '../../../components/header/header.component';
 import { Router } from '@angular/router';
 import { DpiService } from '../../../services/dpi.service';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../components/user/user.interface';
+import { CommonModule } from '@angular/common'; // Add for *ngFor
 
 @Component({
   selector: 'app-creer-dossier',
   templateUrl: './creer-dossier.component.html',
-  imports: [ReactiveFormsModule, HeaderComponent],
+  imports: [ReactiveFormsModule, HeaderComponent, CommonModule],
   standalone: true,
 })
-export class CreerDossierComponent {
+export class CreerDossierComponent implements OnInit {
   dossierForm: FormGroup;
   isSubmitting = false;
+  patients: User[] = []; // List of patients
+  doctors: User[] = []; // List of doctors
+  nurses: User[] = []; // List of nurses
 
   constructor(
     public fb: FormBuilder,
     public router: Router,
-    private dpiService: DpiService
+    private dpiService: DpiService,
+    private userService: UserService // Inject UserService
   ) {
     this.dossierForm = this.fb.group({
       //Informations du Patient
 
-      nom: ['', Validators.required],
-      prenom: ['', Validators.required],
+      selectedPatientId: ['', Validators.required],
       numSecu: ['', Validators.required],
       dateNaissance: ['', Validators.required],
       adresse: ['', Validators.required],
@@ -46,16 +52,46 @@ export class CreerDossierComponent {
     });
   }
 
+  ngOnInit() {
+    // Fetch all users and filter by role
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        this.patients = users.filter((user) => user.user_type === 'patient');
+        this.doctors = users.filter((user) => user.user_type === 'medecin');
+        this.nurses = users.filter((user) => user.user_type === 'infirmier');
+      },
+      error: (error) => {
+        console.error('Error fetching users:', error);
+      },
+    });
+  }
+
   onSubmit() {
     if (this.dossierForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
 
-      // Add creation date and last modified date
+      // Extract selected patient's details
+      const selectedPatientId = this.dossierForm.value.selectedPatientId;
+      console.log(selectedPatientId);
+      const selectedPatient = this.patients.find(
+        (p) => p.id == selectedPatientId
+      );
+
+      if (!selectedPatient) {
+        console.error('Selected patient not found');
+        this.isSubmitting = false;
+        return;
+      }
+
+      // Prepare data for backend
       const dossierData = {
         ...this.dossierForm.value,
-        // dateCreation: new Date().toISOString(),
-        // dateDerniereModification: new Date().toISOString(),
+        nom: selectedPatient.nom, // Add nom from selected patient
+        prenom: selectedPatient.prenom, // Add prenom from selected patient
       };
+
+      // Remove unused field (selectedPatientId)
+      delete dossierData.selectedPatientId;
 
       this.dpiService.createDossier(dossierData).subscribe({
         next: () => {
