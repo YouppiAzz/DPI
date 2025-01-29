@@ -7,11 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 interface LoginResponse {
   access: string;
   refresh: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
+  user_type: string;
 }
 
 interface SignupRequest {
@@ -35,7 +31,7 @@ interface SignupResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://127.0.0.1:8000/api';
+  private readonly API_URL = 'http://127.0.0.1:8000';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
 
@@ -85,9 +81,9 @@ export class AuthService {
         })
       );
 
-      if (response && response.access && response.user) {
+      if (response && response.access && response.user_type) {
         this.setInStorage(this.TOKEN_KEY, response.access);
-        this.setInStorage(this.USER_KEY, JSON.stringify(response.user));
+        this.setInStorage(this.USER_KEY, JSON.stringify(response.user_type));
         return response;
       }
 

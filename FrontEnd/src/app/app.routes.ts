@@ -19,7 +19,7 @@ import { MedecinHomeComponent } from './pages/Medecin/home/home.component';
 import { AuthGuard } from './pages/auth/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/signup', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },

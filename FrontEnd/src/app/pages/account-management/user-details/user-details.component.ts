@@ -6,10 +6,10 @@ import { HeaderComponent } from '../../../components/header/header.component';
 
 import { CommonModule } from '@angular/common';
 
-import { User } from '../../../components/user/user.interface'
+import { User } from '../../../components/user/user.interface';
+import { UserService } from '../../../services/user.service';
 
 @Component({
-
   selector: 'app-user-details',
 
   templateUrl: './user-details.component.html',
@@ -18,41 +18,35 @@ import { User } from '../../../components/user/user.interface'
 
   standalone: true,
 
-  imports: [RouterModule, HeaderComponent, CommonModule]
-
+  imports: [RouterModule, HeaderComponent, CommonModule],
 })
-
 export class UserDetailsComponent implements OnInit {
-
   userId: string = '';
 
-
-  user : User = {
+  user: User = {
     id: 0,
-    nom: "",
-    prenom: "",
-    dateCreation: "",
-    dateDerniereAccede: "",
-    role: "",
-    username: ""
+    nom: '',
+    prenom: '',
+    // dateCreation: "",
+    // dateDerniereAccede: '',
+    user_type: '',
+    // username: '',
   };
 
-  constructor(private route: ActivatedRoute) { }
-
-
+  constructor(
+    private route: ActivatedRoute,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-
     // Get the id parameter from the route
 
-    this.route.params.subscribe(params => {
-
-      this.userId = params['id'];
-
-      // Here you can add logic to fetch User details using the ID
-
+    this.route.params.subscribe((params) => {
+      const userId = params['id'];
+      this.userService.getUserById(+userId).subscribe({
+        next: (user) => (this.user = user),
+        error: (error) => console.error('Error loading user:', error),
+      });
     });
-
   }
-
 }

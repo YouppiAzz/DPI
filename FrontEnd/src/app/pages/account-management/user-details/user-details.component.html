@@ -1,109 +1,103 @@
 <div class="flex flex-col h-screen">
   <app-header [pageName]="'Créer user'" [isSearchActive]="false"></app-header>
   <div class="flex-1 pb-8 px-8">
+    <!-- Informations sur le user-->
 
-      <!-- Informations sur le user-->
-
-      <p class="pb-3 text-xl">Informations sur le user</p>
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Date de création</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Date de la dernière modification</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
+    <p class="pb-3 text-xl">Informations sur le user</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Date de création</p>
+        <p class="font-semibold w-1/4"></p>
       </div>
 
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Date de la dernière modification</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+    </div>
 
-      <!-- Informations du patient -->
+    <!-- Informations du patient -->
 
-      <p class="py-3 text-xl">Informations du patient</p>
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Nom</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Prénom</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de sécurité sociale</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Date de naissance</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Adresse</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
+    <p class="py-3 text-xl">Informations du patient</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Nom</p>
+        <p class="font-semibold w-1/4"></p>
       </div>
 
-        <!-- Contact d'urgence -->
-
-      <p class="py-3 text-xl">Contact d'urgence</p>
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Personne à contacter</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Prénom</p>
+        <p class="font-semibold w-1/4"></p>
       </div>
 
-        <!-- Equipe medicale -->
-
-      <p class="py-3 text-xl">Equipe médicale</p>
-
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Médecin traitant</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Infirmier en charge du patient</p>
-            <p class="font-semibold w-1/4"></p>
-        </div>
-
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de sécurité sociale</p>
+        <p class="font-semibold w-1/4"></p>
       </div>
 
-      <!-- Buttons -->
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Date de naissance</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
 
-      <div class="flex gap-4 pt-6">
-          <a type="submit" 
-           class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            Modifier
-          </a>
-          <a type="button" routerLink="/account-management"
-            class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            Retour
-          </a>
-        </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Adresse</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
 
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+    </div>
+
+    <!-- Contact d'urgence -->
+
+    <p class="py-3 text-xl">Contact d'urgence</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Personne à contacter</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+    </div>
+
+    <!-- Equipe medicale -->
+
+    <p class="py-3 text-xl">Equipe médicale</p>
+
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Médecin traitant</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Infirmier en charge du patient</p>
+        <p class="font-semibold w-1/4"></p>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="flex gap-4 pt-6">
+      <a
+        type="submit"
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Modifier
+      </a>
+      <a
+        type="button"
+        routerLink="/account-management"
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Retour
+      </a>
+    </div>
   </div>
 </div>

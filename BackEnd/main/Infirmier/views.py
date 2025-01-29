@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 
 from .models import SoinPatient, Infirmier
-from main.Patient.models import Patient
+from Patient.models import Patient
 
 
 class PatientSoinView(APIView):
