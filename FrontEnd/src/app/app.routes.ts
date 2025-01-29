@@ -18,6 +18,12 @@ import { SignupComponent } from './pages/auth/signup.component';
 import { MedecinHomeComponent } from './pages/Medecin/home/home.component';
 import { AuthGuard } from './pages/auth/auth.guard';
 import { InfirmierHomeComponent } from './pages/infirmier/infirmier.component';
+import { BilanradioComponent } from './pages/Medecin/home/bilanradio.component';
+import { BilanlaboratoireComponent } from './pages/Medecin/home/bilanlaboratoire.component';
+import { OrdonnanceComponent } from './pages/Medecin/home/ordonnance.component';
+import { DossierDetailsMedecinComponent } from './pages/Medecin/home/dossier-details/dossier-details.component';
+import { LaborantinComponent } from './pages/laborantin/laborantin.component';
+import { RadiologueComponent } from './pages/radiologue/radiologue.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -47,11 +53,22 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { requiredRole: 'Médecin' },
   },
+  { path: 'medecin/bilanradio', component: BilanradioComponent },
+  { path: 'medecin/bilanlaboratoire', component: BilanlaboratoireComponent },
+  { path: 'medecin/ordonance', component: OrdonnanceComponent },
+  { path: 'medecin/dossier/:id', component: DossierDetailsMedecinComponent },
+
+  { path: 'laborantin/home', component: LaborantinComponent },
+  { path: 'laborantin/bilanlaboratoire', component: BilanlaboratoireComponent },
+
+  { path: 'radiologue/home', component: RadiologueComponent },
+  { path: 'radiologue/bilanradio', component: BilanradioComponent },
+
   {
     path: 'infirmier',
     component: InfirmierHomeComponent,
     canActivate: [AuthGuard],
-    data: { role: 'infirmier' }
+    data: {requiredRole: 'Infirmier' }
   }
 
 ];

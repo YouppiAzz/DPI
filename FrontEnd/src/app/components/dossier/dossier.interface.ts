@@ -12,4 +12,7 @@ export interface Dossier {
   numTelContact?: string;
   medecin: string;
   infirmier?: string;
+  ordonnances?: string[];
+  bilanRadios?: string[];
+  bilanLaborantins?: string[];
 }
