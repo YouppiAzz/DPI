@@ -1,10 +1,12 @@
 <div class="flex flex-col h-screen">
-  <app-header [pageName]="'Créer Dossier'" [isSearchActive]="false"></app-header>
+  <app-header
+    [pageName]="'Créer Dossier'"
+    [isSearchActive]="false"
+  ></app-header>
   <div class="flex-1 pb-8 px-8">
+    <!-- Informations sur le dossier-->
 
-      <!-- Informations sur le dossier-->
-
-      <p class="pb-3 text-xl">Informations sur le dossier</p>
+    <!-- <p class="pb-3 text-xl">Informations sur le dossier</p>
       <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
 
         <div class="text-[16px] flex">
@@ -17,93 +19,90 @@
             <p class="font-semibold w-1/4">{{dossier.dateDerniereModification}}</p>
         </div>
 
+      </div> -->
+
+    <!-- Informations du patient -->
+
+    <p class="py-3 text-xl">Informations du patient</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Nom</p>
+        <p class="font-semibold w-1/4">{{ dossier.nom }}</p>
       </div>
 
-
-      <!-- Informations du patient -->
-
-      <p class="py-3 text-xl">Informations du patient</p>
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Nom</p>
-            <p class="font-semibold w-1/4">{{dossier.nom}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Prénom</p>
-            <p class="font-semibold w-1/4">{{dossier.prenom}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de sécurité sociale</p>
-            <p class="font-semibold w-1/4">{{dossier.numSecu}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Date de naissance</p>
-            <p class="font-semibold w-1/4">{{dossier.dateNaissance}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Adresse</p>
-            <p class="font-semibold w-1/4">{{dossier.adresse}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
-            <p class="font-semibold w-1/4">{{dossier.numTel}}</p>
-        </div>
-
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Prénom</p>
+        <p class="font-semibold w-1/4">{{ dossier.prenom }}</p>
       </div>
 
-        <!-- Contact d'urgence -->
-
-      <p class="py-3 text-xl">Contact d'urgence</p>
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Personne à contacter</p>
-            <p class="font-semibold w-1/4">{{dossier.nomContact}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
-            <p class="font-semibold w-1/4">{{dossier.numTelContact}}</p>
-        </div>
-
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de sécurité sociale</p>
+        <p class="font-semibold w-1/4">{{ dossier.numSecu }}</p>
       </div>
 
-        <!-- Equipe medicale -->
-
-      <p class="py-3 text-xl">Equipe médicale</p>
-
-      <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Médecin traitant</p>
-            <p class="font-semibold w-1/4">{{dossier.medecin}}</p>
-        </div>
-
-        <div class="text-[16px] flex">
-            <p class="text-gray-600 w-1/4">Infirmier en charge du patient</p>
-            <p class="font-semibold w-1/4">{{dossier.infirmier}}</p>
-        </div>
-
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Date de naissance</p>
+        <p class="font-semibold w-1/4">{{ dossier.dateNaissance }}</p>
       </div>
 
-      <!-- Buttons -->
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Adresse</p>
+        <p class="font-semibold w-1/4">{{ dossier.adresse }}</p>
+      </div>
 
-      <div class="flex gap-4 pt-6">
-          <a type="submit" 
-           class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            Modifier
-          </a>
-          <a type="button" routerLink="/dpi-management"
-            class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            Retour
-          </a>
-        </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4">{{ dossier.numTel }}</p>
+      </div>
+    </div>
 
+    <!-- Contact d'urgence -->
+
+    <p class="py-3 text-xl">Contact d'urgence</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Personne à contacter</p>
+        <p class="font-semibold w-1/4">{{ dossier.nomContact }}</p>
+      </div>
+
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4">{{ dossier.numTelContact }}</p>
+      </div>
+    </div>
+
+    <!-- Equipe medicale -->
+
+    <p class="py-3 text-xl">Equipe médicale</p>
+
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Médecin traitant</p>
+        <p class="font-semibold w-1/4">{{ dossier.medecin }}</p>
+      </div>
+
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Infirmier en charge du patient</p>
+        <p class="font-semibold w-1/4">{{ dossier.infirmier }}</p>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="flex gap-4 pt-6">
+      <a
+        type="submit"
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Modifier
+      </a>
+      <a
+        type="button"
+        routerLink="/dpi-management"
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Retour
+      </a>
+    </div>
   </div>
 </div>

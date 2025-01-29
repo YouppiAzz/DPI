@@ -17,14 +17,19 @@ import { SignupComponent } from './pages/auth/signup.component';
 
 import { MedecinHomeComponent } from './pages/Medecin/home/home.component';
 import { AuthGuard } from './pages/auth/auth.guard';
+import { InfirmierHomeComponent } from './pages/infirmier/infirmier.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/signup', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
 
-  { path: 'home', component: HomeComponent },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+  },
 
   { path: 'dpi-management', component: DpiManagementComponent },
   { path: 'dpi-management/creer-dossier', component: CreerDossierComponent },
@@ -39,7 +44,14 @@ export const routes: Routes = [
   {
     path: 'medecin/home',
     component: MedecinHomeComponent,
-    // canActivate: [AuthGuard],
-    data: { requiredRole: 'medecin' },
+    canActivate: [AuthGuard],
+    data: { requiredRole: 'Médecin' },
   },
+  {
+    path: 'infirmier',
+    component: InfirmierHomeComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'infirmier' }
+  }
+
 ];

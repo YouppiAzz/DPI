@@ -1,7 +1,7 @@
 export interface Dossier {
   id: number;
-  dateCreation: string;
-  dateDerniereModification: string;
+  // dateCreation: string;
+  // dateDerniereModification: string;
   nom: string;
   prenom: string;
   numSecu?: string;

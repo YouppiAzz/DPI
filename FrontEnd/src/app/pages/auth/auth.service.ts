@@ -7,11 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 interface LoginResponse {
   access: string;
   refresh: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
+  user_type: string;
 }
 
 interface SignupRequest {
@@ -85,9 +81,9 @@ export class AuthService {
         })
       );
 
-      if (response && response.access && response.user) {
+      if (response && response.access && response.user_type) {
         this.setInStorage(this.TOKEN_KEY, response.access);
-        this.setInStorage(this.USER_KEY, JSON.stringify(response.user));
+        this.setInStorage(this.USER_KEY, JSON.stringify(response.user_type));
         return response;
       }
 
