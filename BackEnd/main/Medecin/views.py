@@ -23,22 +23,35 @@ class CustomLoginView(APIView):
 
         # Authenticate the user
         user = authenticate(request, username=email, password=hex_dig)
+
+        user_info = CustomUser.objects.get(email=email)
+
         if user is not None:
             # Generate JWT token
             refresh = RefreshToken.for_user(user)
             return Response({
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
-                "user_type": user.user_type  # Return the user's role for frontend handling
+                "user_type": user.user_type,  # Return the user's role for frontend handling
+                "nom": user_info.nom,
+                "prenom": user_info.prenom,
+                "email": user_info.email,
+                "id": user_info.id
+
             })
         else:
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Medecin, Notification
 from Patient.models import Patient,DPI
+from Medecin.models import CustomUserManager
+
+
 class ListeDPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -230,12 +243,10 @@ class CreateDPIView(APIView):
     def post(self, request):
         try:
             patient_id = request.data.get("patient_id")
-            print(patient_id)
             if not patient_id:
                 return Response({"error": "L'ID du patient est requis"}, status=status.HTTP_400_BAD_REQUEST)
             
             patient = Patient.objects.get(id=patient_id)
-            print(patient_id)
 
             medecin_id = request.data.get("medecin_traitant")
             if not medecin_id:
@@ -445,58 +456,72 @@ class AddNotificationView(APIView):
             )
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-class UsersView(APIView):
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        try:
-            users = CustomUser.objects.all()
-            users_data = [
-                {
-                    "id": user.id,
-                    "nom": user.nom,
-                    "prenom": user.prenom,
-                    "email": user.email,
-                    "user_type": user.user_type,
-                }
-                for user in users
-            ]
-            return Response(users_data, status=status.HTTP_200_OK)
-
-        except CustomUser.DoesNotExist:
-            return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
-        
-class AddUserView(APIView):
-    # permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            email = request.data.get("email")
-            nom = request.data.get("nom")
-            prenom = request.data.get("prenom")
-            user_type = request.data.get("user_type")
-            password = request.data.get("password")
-
-            if not email or not nom or not prenom or not user_type or not password:
-                return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
-
-            user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=password)
-            user.save()
-
-            return Response(
-                {
-                    "message": "Utilisateur ajouté avec succès.",
-                    "user": {
-                        "id": user.id,
-                        "nom": user.nom,
-                        "prenom": user.prenom,
-                        "email": user.email,
-                        "user_type": user.user_type,
-                    },
-                },
-                status=status.HTTP_201_CREATED,
-            )
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+#
+# class UsersView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self, request):
+#         try:
+#             users = CustomUser.objects.all()
+#             users_data = [
+#                 {
+#                     "id": user.id,
+#                     "nom": user.nom,
+#                     "prenom": user.prenom,
+#                     "email": user.email,
+#                     "user_type": user.user_type,
+#                 }
+#                 for user in users
+#             ]
+#             return Response(users_data, status=status.HTTP_200_OK)
+#
+#         except CustomUser.DoesNotExist:
+#             return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
+#
+# class AddUserView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         try:
+#
+#             manager = CustomUserManager()
+#
+#             email = request.data.get("email")
+#             nom = request.data.get("nom")
+#             prenom = request.data.get("prenom")
+#             user_type = request.data.get("user_type")
+#             password = request.data.get("password")
+#
+#
+#
+#             if not email or not nom or not prenom or not user_type or not password:
+#                 return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
+#
+#             user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=password)
+#             user.save()
+#
+#             type_of_user = user_type.lower()
+#
+#             if type_of_user == "patient":
+#                 pass
+#             elif type_of_user == "medecin":
+#                 pass
+#             elif type_of_user == "infirmier":
+#                 pass
+#
+#             return Response(
+#                 {
+#                     "message": "Utilisateur ajouté avec succès.",
+#                     "user": {
+#                         "id": user.id,
+#                         "nom": user.nom,
+#                         "prenom": user.prenom,
+#                         "email": user.email,
+#                         "user_type": user.user_type,
+#                     },
+#                 },
+#                 status=status.HTTP_201_CREATED,
+#             )
+#
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
