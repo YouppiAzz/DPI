@@ -4,16 +4,18 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 import hashlib
 from Medecin.models import CustomUser
+from Infirmier.models import Infirmier
+from Radiologue.models import Radiologue
+from Laboratorian.models import Laboratorian
+from Medecin.models import Medecin
 
 
 class CustomLoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        # print(password)
-        # hashed = hashlib.sha256(password.encode())
-        # hex_dig = hashed.hexdigest()
-        # print(hex_dig)
+        hashed = hashlib.sha256(password.encode())
+        hex_dig = hashed.hexdigest()
 
         # Check if the user exists
         try:
@@ -22,40 +24,25 @@ class CustomLoginView(APIView):
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Authenticate the user
-        # user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=email, password=hex_dig)
 
-        # user_info = CustomUser.objects.get(email=email)
+        user_info = CustomUser.objects.get(email=email)
 
-        # First try Django's authentication
-        django_auth = authenticate(request, username=email, password=password)
-        
-        if django_auth is not None:
-            user = django_auth
+        if user is not None:
+            # Generate JWT token
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user_type": user.user_type,  # Return the user's role for frontend handling
+                "nom": user_info.nom,
+                "prenom": user_info.prenom,
+                "email": user_info.email,
+                "id": user_info.id
+
+            })
         else:
-            # If that fails, try the old SHA-256 method
-            hashed = hashlib.sha256(password.encode())
-            hex_dig = hashed.hexdigest()
-            
-            # If old password matches, upgrade to Django's password hashing
-            if user.password == hex_dig:
-                # If old password matches, upgrade to Django's password hashing
-                user.set_password(password)
-                user.save()
-            else:
-                return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
-        
-        # Generate JWT token
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-            "user_type": user.user_type,  # Return the user's role for frontend handling
-            "nom": user.nom,
-            "prenom": user.prenom,
-            "email": user.email,
-            "id": user.id
-        })
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -261,25 +248,59 @@ class CreateDPIView(APIView):
             if not patient_id:
                 return Response({"error": "L'ID du patient est requis"}, status=status.HTTP_400_BAD_REQUEST)
             
-            patient = Patient.objects.get(id=patient_id)
+            patient = Patient.objects.get(user_id=patient_id)
 
-            medecin_id = request.data.get("medecin_traitant")
+            medecin_id = request.data.get("medecin_traitant_id")
             if not medecin_id:
                 return Response({"error": "L'ID du médecin traitant est requis"}, status=status.HTTP_400_BAD_REQUEST)
 
-            medecin = Medecin.objects.get(id=medecin_id)
+            medecin = Medecin.objects.get(user_id=medecin_id)
 
-            mutuelle = request.data.get("mutuelle")
-            poids = request.data.get("poids")
-            groupe_sanguin = request.data.get("groupe_sanguin")
+            infirmier_id = request.data.get("infirmier_id")
+            if not infirmier_id:
+                return Response({"error": "L'ID de l'infirmier traitant est requis"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Création du DPI sans spécifier `date_creation`
+            infirmier = Infirmier.objects.get(user_id=infirmier_id)
+            
+            # numero_securite_sociale = request.data.get("numero_securite_sociale")
+            # date_naissance = request.data.get("date_naissance")
+            # adresse = request.data.get("adresse")
+            # telephone = request.data.get("telephone")
+            # emergency_contact_name = request.data.get("emergency_contact_name")
+            # emergency_contact_phone = request.data.get("emergency_contact_phone")
+
+            patient_details = request.data.get("patient_details")
+            numero_securite_sociale = patient_details.get("numero_securite_sociale")
+            date_naissance = patient_details.get("date_naissance")
+            adresse = patient_details.get("adresse")
+            telephone = patient_details.get("telephone")
+            emergency_contact_name = patient_details.get("emergency_contact_name")
+            emergency_contact_phone = patient_details.get("emergency_contact_phone")
+
+
+
+            #mutuelle = request.data.get("mutuelle")
+            #poids = request.data.get("poids")
+            #groupe_sanguin = request.data.get("groupe_sanguin")
+
+            #dpi = DPI.objects.get(patient=patient)
+
+            patient.social_security_number = numero_securite_sociale
+            patient.birth_date = date_naissance
+            patient.address = adresse
+            patient.phone_number = telephone
+            patient.emergency_contact_name = emergency_contact_name
+            patient.emergency_contact_phone = emergency_contact_phone
+
+            patient.save()
+
             dpi = DPI.objects.create(
                 patient=patient,
-                mutuelle=mutuelle,
-                poids=poids,
-                groupe_sanguin=groupe_sanguin,
-                medecin_traitant=medecin
+                #mutuelle=mutuelle,
+                poids=0,
+                #groupe_sanguin=groupe_sanguin,
+                medecin_traitant=medecin,
+                #infirmier_traitant=infirmier,
             )
 
             dpi.soins.set([])  # Initialise les soins avec une liste vide
@@ -311,6 +332,8 @@ class CreateDPIView(APIView):
             return Response({"error": "Médecin introuvable"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class RechercherDPIParNumSecuView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -508,24 +531,34 @@ class AddUserView(APIView):
             prenom = request.data.get("prenom")
             user_type = request.data.get("user_type")
             password = request.data.get("password")
-            # hash_object = hashlib.sha256(password.encode())
-            # hex_dig = hash_object.hexdigest()
+            hash_object = hashlib.sha256(password.encode())
+            hex_dig = hash_object.hexdigest()
 
 
             if not email or not nom or not prenom or not user_type or not password:
                 return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
 
-            user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=password  )
+            user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=hex_dig)  
             user.save()
 
             type_of_user = user_type.lower()
 
-            if type_of_user == "patient":
-                pass
-            elif type_of_user == "medecin":
-                pass
-            elif type_of_user == "infirmier":
-                pass
+            match type_of_user:
+                case 'medecin':
+                    medecin = Medecin.objects.create(user_id=user.id, specialite='General')
+                    medecin.save()
+                case 'infirmier':
+                    infirmier = Infirmier.objects.create(user_id=user.id, Domaine='General')
+                    infirmier.save()
+                case 'radiologue':
+                    radiologue = Radiologue.objects.create(user_id=user.id, Domaine='General')
+                    radiologue.save()
+                case 'laboratorian':
+                    laboratorian = Laboratorian.objects.create(user_id=user.id, Domaine='General')
+                    laboratorian.save()
+                case 'patient':
+                    patient = Patient.objects.create(user_id=user.id, address='Alger', phone_number='0987', birth_date='2000-01-01', social_security_number='111', emergency_contact_name='Emergency_name', emergency_contact_phone='911', medical_insurance_provider='MIP')
+                    patient.save()
 
             return Response(
                 {
