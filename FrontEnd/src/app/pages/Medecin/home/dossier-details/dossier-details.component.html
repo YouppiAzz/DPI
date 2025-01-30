@@ -1,0 +1,145 @@
+<div class="flex flex-col h-screen">
+  <app-header [pageName]="'Détails Dossier'" [isSearchActive]="false"></app-header>
+  <div class="flex-1 pb-8 px-8 overflow-y-auto">
+    <!-- Informations du patient -->
+    <p class="py-3 text-xl">Informations du patient</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Nom</p>
+        <p class="font-semibold w-1/4">{{ dossier.nom }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Prénom</p>
+        <p class="font-semibold w-1/4">{{ dossier.prenom }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de sécurité sociale</p>
+        <p class="font-semibold w-1/4">{{ dossier.numSecu }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Date de naissance</p>
+        <p class="font-semibold w-1/4">{{ dossier.dateNaissance }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Adresse</p>
+        <p class="font-semibold w-1/4">{{ dossier.adresse }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4">{{ dossier.numTel }}</p>
+      </div>
+    </div>
+
+    <!-- Contact d'urgence -->
+    <p class="py-3 text-xl">Contact d'urgence</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Personne à contacter</p>
+        <p class="font-semibold w-1/4">{{ dossier.nomContact }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Numéro de téléphone</p>
+        <p class="font-semibold w-1/4">{{ dossier.numTelContact }}</p>
+      </div>
+    </div>
+
+    <!-- Equipe médicale -->
+    <p class="py-3 text-xl">Equipe médicale</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Médecin traitant</p>
+        <p class="font-semibold w-1/4">{{ dossier.medecin }}</p>
+      </div>
+      <div class="text-[16px] flex">
+        <p class="text-gray-600 w-1/4">Infirmier en charge du patient</p>
+        <p class="font-semibold w-1/4">{{ dossier.infirmier }}</p>
+      </div>
+    </div>
+
+    <!-- Ordonnances -->
+    <p class="py-3 text-xl">Ordonnances</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div *ngFor="let ordonnance of dossier.ordonnances" class="border-b pb-2 last:border-b-0">
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Date</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Description</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bilans Radio -->
+    <p class="py-3 text-xl">Bilans Radio</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div *ngFor="let bilan of dossier.bilanRadios" class="border-b pb-2 last:border-b-0">
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Date</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Type</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Résultat</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bilans Laborantin -->
+    <p class="py-3 text-xl">Bilans Laborantin</p>
+    <div class="space-y-2 bg-white rounded-[24px] px-6 py-3">
+      <div *ngFor="let bilan of dossier.bilanLaborantins" class="border-b pb-2 last:border-b-0">
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Date</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Type</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+        <div class="text-[16px] flex">
+          <p class="text-gray-600 w-1/4">Résultat</p>
+          <p class="font-semibold w-3/4"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap gap-4 pt-6">
+      <a
+      routerLink="/medecin/ordonance"
+        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Ajouter Ordonnance
+      </a>
+      <a
+      routerLink="/medecin/bilanradio"
+        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Ajouter Bilan Radio
+      </a>
+      <a
+      routerLink="/medecin/bilanlaboratoire"
+        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Ajouter Bilan Laborantin
+      </a>
+      <a
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Modifier
+      </a>
+      <a
+        routerLink="/medecin/home"
+        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+      >
+        Retour
+      </a>
+    </div>
+  </div>
+</div>

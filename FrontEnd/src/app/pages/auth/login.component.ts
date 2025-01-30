@@ -57,39 +57,16 @@ export class LoginComponent implements OnInit {
 
       try {
         const { email, password, rememberMe } = this.loginForm.getRawValue();
-        await this.authService.login(email ?? '', password ?? '');
+        const result = await this.authService.login(
+          email ?? '',
+          password ?? ''
+        );
 
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
 
-        // Get the logged-in user's data
-        const user = this.authService.getCurrentUser();
-
-        // Determine route based on user role
-        let targetRoute = '/home'; // Default for admin/unknown roles
-        if (user) {
-          switch (user.user_type.toLowerCase()) {
-            case 'medecin':
-              targetRoute = '/medecin/home';
-              break;
-            case 'infirmier':
-              targetRoute = '/infirmier';
-              break;
-            case 'patient':
-              targetRoute = '/patient/home'; // Add if exists
-              break;
-            case 'admin':
-              targetRoute = '/home'; // Add if exists
-              break;
-            default:
-              targetRoute = '/patient/home';
-              break;
-            // Add other roles as needed
-          }
-        }
-
-        this.router.navigate([targetRoute]);
+        this.router.navigate(['/home']);
       } catch (error) {
         this.errorMessage =
           error instanceof Error
