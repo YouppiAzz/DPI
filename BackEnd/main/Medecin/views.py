@@ -6,14 +6,14 @@ import hashlib
 from Medecin.models import CustomUser
 
 
-
-
 class CustomLoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        hashed = hashlib.sha256(password.encode())
-        hex_dig = hashed.hexdigest()
+        # print(password)
+        # hashed = hashlib.sha256(password.encode())
+        # hex_dig = hashed.hexdigest()
+        # print(hex_dig)
 
         # Check if the user exists
         try:
@@ -22,25 +22,40 @@ class CustomLoginView(APIView):
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         # Authenticate the user
-        user = authenticate(request, username=email, password=hex_dig)
+        # user = authenticate(request, username=email, password=password)
 
-        user_info = CustomUser.objects.get(email=email)
+        # user_info = CustomUser.objects.get(email=email)
 
-        if user is not None:
-            # Generate JWT token
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user_type": user.user_type,  # Return the user's role for frontend handling
-                "nom": user_info.nom,
-                "prenom": user_info.prenom,
-                "email": user_info.email,
-                "id": user_info.id
-
-            })
+        # First try Django's authentication
+        django_auth = authenticate(request, username=email, password=password)
+        
+        if django_auth is not None:
+            user = django_auth
         else:
-            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            # If that fails, try the old SHA-256 method
+            hashed = hashlib.sha256(password.encode())
+            hex_dig = hashed.hexdigest()
+            
+            # If old password matches, upgrade to Django's password hashing
+            if user.password == hex_dig:
+                # If old password matches, upgrade to Django's password hashing
+                user.set_password(password)
+                user.save()
+            else:
+                return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        
+        # Generate JWT token
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user_type": user.user_type,  # Return the user's role for frontend handling
+            "nom": user.nom,
+            "prenom": user.prenom,
+            "email": user.email,
+            "id": user.id
+        })
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -457,71 +472,74 @@ class AddNotificationView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 #
-# class UsersView(APIView):
-#     permission_classes = [IsAuthenticated]
+class UsersView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            users = CustomUser.objects.all()
+            users_data = [
+                {
+                    "id": user.id,
+                    "nom": user.nom,
+                    "prenom": user.prenom,
+                    "email": user.email,
+                    "user_type": user.user_type,
+                }
+                for user in users
+            ]
+            return Response(users_data, status=status.HTTP_200_OK)
+
+        except CustomUser.DoesNotExist:
+            return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
+        
+from django.contrib.auth.hashers import make_password
 #
-#     def get(self, request):
-#         try:
-#             users = CustomUser.objects.all()
-#             users_data = [
-#                 {
-#                     "id": user.id,
-#                     "nom": user.nom,
-#                     "prenom": user.prenom,
-#                     "email": user.email,
-#                     "user_type": user.user_type,
-#                 }
-#                 for user in users
-#             ]
-#             return Response(users_data, status=status.HTTP_200_OK)
-#
-#         except CustomUser.DoesNotExist:
-#             return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
-#
-# class AddUserView(APIView):
-#     permission_classes = [IsAuthenticated]
-#
-#     def post(self, request):
-#         try:
-#
-#             manager = CustomUserManager()
-#
-#             email = request.data.get("email")
-#             nom = request.data.get("nom")
-#             prenom = request.data.get("prenom")
-#             user_type = request.data.get("user_type")
-#             password = request.data.get("password")
-#
-#
-#
-#             if not email or not nom or not prenom or not user_type or not password:
-#                 return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
-#
-#             user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=password)
-#             user.save()
-#
-#             type_of_user = user_type.lower()
-#
-#             if type_of_user == "patient":
-#                 pass
-#             elif type_of_user == "medecin":
-#                 pass
-#             elif type_of_user == "infirmier":
-#                 pass
-#
-#             return Response(
-#                 {
-#                     "message": "Utilisateur ajouté avec succès.",
-#                     "user": {
-#                         "id": user.id,
-#                         "nom": user.nom,
-#                         "prenom": user.prenom,
-#                         "email": user.email,
-#                         "user_type": user.user_type,
-#                     },
-#                 },
-#                 status=status.HTTP_201_CREATED,
-#             )
-#
-#         except Exception as e:
-#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+class AddUserView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+
+            # manager = CustomUserManager()
+
+            email = request.data.get("email")
+            nom = request.data.get("nom")
+            prenom = request.data.get("prenom")
+            user_type = request.data.get("user_type")
+            password = request.data.get("password")
+            # hash_object = hashlib.sha256(password.encode())
+            # hex_dig = hash_object.hexdigest()
+
+
+            if not email or not nom or not prenom or not user_type or not password:
+                return Response({"error": "Veuillez remplir tous les champs"}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = CustomUser.objects.create(email=email, nom=nom, prenom=prenom, user_type=user_type, password=password  )
+            user.save()
+
+            type_of_user = user_type.lower()
+
+            if type_of_user == "patient":
+                pass
+            elif type_of_user == "medecin":
+                pass
+            elif type_of_user == "infirmier":
+                pass
+
+            return Response(
+                {
+                    "message": "Utilisateur ajouté avec succès.",
+                    "user": {
+                        "id": user.id,
+                        "nom": user.nom,
+                        "prenom": user.prenom,
+                        "email": user.email,
+                        "user_type": user.user_type,
+                    },
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

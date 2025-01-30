@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
+import { User } from '../../components/user/user.interface';
 
 interface LoginResponse {
   access: string;
@@ -42,6 +43,8 @@ export class AuthService {
 
   private currentUserSubject = new BehaviorSubject<any>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+
+  private currentUser: User | null = null;
 
   // Getter for current user value (simplifies access)
   get currentUserValue(): any {
@@ -83,7 +86,7 @@ export class AuthService {
 
       if (response && response.access && response.user_type) {
         this.setInStorage(this.TOKEN_KEY, response.access);
-        this.setInStorage(this.USER_KEY, JSON.stringify(response.user_type));
+        this.setInStorage(this.USER_KEY, JSON.stringify(response));
         return response;
       }
 
@@ -164,5 +167,18 @@ export class AuthService {
       this.logout();
       throw error;
     }
+  }
+
+  getCurrentUser(): User | null {
+    return (
+      this.currentUser ||
+      JSON.parse(localStorage.getItem(this.USER_KEY) || 'null')
+    );
+  }
+
+  // Call this method after login
+  setCurrentUser(user: User) {
+    this.currentUser = user;
+    localStorage.setItem('currentUser', JSON.stringify(user));
   }
 }

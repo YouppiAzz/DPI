@@ -37,7 +37,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     prenom = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # For admin users
-    user_type = models.CharField(max_length=15, choices=USER_TYPES, default='patient')
+    user_type = models.CharField(max_length=15, choices=USER_TYPES, default='admin')
 
     objects = CustomUserManager()
 
